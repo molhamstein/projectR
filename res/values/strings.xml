@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Social Rosary</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+
+    <!-- ERRORS -->
+    <string name="error_intrnet">لا يوجد أتصال بالإنترنت</string>
+    <string name="error_intrnet_title">خطأ في الإتصال</string>
+    <string name="error_connection_failed">تعذر إتمام العملية ... خطأ في الإتصال</string>
+
+    <!-- warnings -->
+    <string name="pleas_wait">الرجاءالإنتظار</string>
+
+    <!-- LOG-IN -->
+    <string name="action_sign_in_register"><b>تسجيل الدخول</b> أو الإشتراك</string>
+    <string name="action_sign_in_short">تسجيل الدخول</string>
+    <string name="login_progress_signing_in">تسجيل الدخول&#8230;</string>
+    <string name="signin">تسجيل الدخول</string>
+    <string name="signup">الإشتراك بالخدمة</string>
+    <string name="male">ذكر</string>
+    <string name="create_account">انشاء حساب جديد</string>
+    <string name="or">أو</string>
+    <string name="your_account_safe">لن يتم نشر اي محتوى على صفحتك الشخصية بدون تصريح منك</string>
+    <string name="enter_phoen_num_header">أدخل رقم  هاتفك لتصلك رسالة تأكيد حسابك على هذا الرقم</string>
+    <string name="local_signup_form_header">تسجيل دخولك من خلال facebook يسهل عليك ايجاد اصدقائك على التطبيق</string>
+    <string name="local_signin_form_header">سجل الدخول بحساب أنشأته سابقا</string>
+    <string name="prompt_uesrname">اسم المستخدم</string>
+    <string name="prompt_email">أدخل رقم جوالك</string>
+    <string name="prompt_password">كلمة السر</string>
+    <string name="login_with_facebook">فيسبوك</string>
+    <string name="is_male">ذكر</string>
+    <string name="error_field_required">يجب ملئ هذا الحقل</string>
+    <string name="error_signingin">فشلت عملية تسجيل الدخول ... أعد المحاولة</string>
+    <string name="error_global_phone">لا تستخدم رقم هاتف دولي </string>
+    <string name="error_short_phone_num">رقم الهاتف غير صحيح .... يجب أن يكون الرقم من عشر خانات</string>
+    <string name="error_incorrect_phone_num">رقم الهاتف غير صحيح ....</string>
+    <string name="error_user_name_required">يجب ان يكون الاسم مكون من ثلاث حروف على الأقل, حاول إختيار اسم يستطيع أصدقائك التعرف عليه</string>
+    
+    
+    <!-- TUT -->
+    <string name="tut_desc1">شرح عن البرنامج</string>
+    <string name="tut_desc2">شرح عن البرنامج</string>
+    <string name="tut_desc3">شرح عن البرنامج</string>
+
+</resources>

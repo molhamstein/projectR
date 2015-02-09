@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="global_bg_color">#fff3e9cd</color>
+    <color name="app_theme1">#eee0b6</color>
+    <color name="app_theme2">#006852</color>
+
+    <!-- btns -->
+    <color name="btn_color1">#975c52</color>
+    <color name="btn_color1_active">#975c52</color>
+    <color name="btn_color2">#a4bac0</color>
+    <color name="btn_color2_active">#a4bac0</color>
+    <color name="blue_facebook">#3d5a99</color>
+    <color name="fbutton_default_color">#3eadeb</color>
+    <color name="fbutton_default_shadow_color">#ff3493c8</color>
+    <!--  -->
+
+    <color name="black_light">#141414</color>
+    <color name="gray_dark">#333</color>
+    <color name="gray">#555</color>
+    <color name="gray_light">#999</color>
+    <color name="gray_off_white">#ddd</color>
+
+</resources>
