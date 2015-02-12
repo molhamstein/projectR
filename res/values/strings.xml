@@ -43,5 +43,15 @@
     <string name="tut_desc1">شرح عن البرنامج</string>
     <string name="tut_desc2">شرح عن البرنامج</string>
     <string name="tut_desc3">شرح عن البرنامج</string>
+    
+    <!-- Drawer Items -->
+    <string-array name="drawer_items">
+        <item>TODO</item>
+        <item>History</item>
+        <item>Settings</item>
+        <item>About</item>
+    </string-array>
+	<color name="drawer_background">#555555</color>
+	<color name="drawer_background_selected">#222222</color>
 
 </resources>

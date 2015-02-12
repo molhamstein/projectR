@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/textview_height"
+    android:orientation="horizontal" >
+	<TextView 
+	    android:id="@+id/name"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:drawableLeft="@drawable/contact_photo"
+	    android:drawablePadding="5dp"
+	    android:textSize="24sp" >
+	</TextView>
+	<ImageView 
+	    android:id="@+id/whatsappIcon"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:src="@drawable/whatsapp"
+	    android:visibility="invisible"/>
+	<ImageView 
+	    android:id="@+id/viberIcon"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:src="@drawable/viber"
+	    android:visibility="invisible"/>
+</LinearLayout>
