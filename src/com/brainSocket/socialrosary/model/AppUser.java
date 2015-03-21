@@ -5,20 +5,25 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class AppUser implements Parcelable {		
+public class AppUser /*implements Parcelable */{		
 	
 	public enum GENDER {MALE, FEMALE} ;
 	
 	public static final String DEFAULT_AVATAR=  "https://s3-us-west-2.amazonaws.com/almuajaha/profile/avatar01.png" ;
 	
+
+	String phoneNum = null;
 	String id = null;
 	String name = null;
-	String picture = null;
-	String fbId = null;
-	String phoneNum = null;
-	int isAppUser = 0 ; 
+	String countryId ;
+	String gcmId ;
+	String picture ;
+	String accessToken ;
+	GENDER gender ;
+	Long date ;
+	long score ; 
+	 
 		
-	
 
 	public AppUser(JSONObject json)
 	{
@@ -32,39 +37,48 @@ public class AppUser implements Parcelable {
 		} 
 		catch (Exception e) {}
 		try {
-			if(json.has("display_name")) 
-				name = json.getString("display_name");
+			if(json.has("mobileNumber")) 
+				phoneNum = json.getString("mobileNumber");
 		} 
 		catch (Exception e) {}
 		try {
-			if(json.has("phone_num")) 
-				phoneNum = json.getString("phone_num");
+			if(json.has("userName")) 
+				name = json.getString("userName");
 		} 
 		catch (Exception e) {}
 		try {
-			if(json.has("is_app_user")) 
-				isAppUser = json.getInt("is_app_user");
+			if(json.has("countryId")) 
+				countryId = json.getString("countryId");
 		} 
 		catch (Exception e) {}
 		try {
-			if(json.has("facebook_id")) {
-				fbId = json.getString("facebook_id");
-				// check if 0
-				if(fbId != null && fbId.equals("0")) {
-					fbId = null;
-				}
-			}
-		} 
-		catch (Exception e) {}
+			if(json.has("isMale")) 
+				gender = (json.getInt("isMale") == 1)?GENDER.MALE:GENDER.FEMALE;
+		}catch (Exception e) {gender = GENDER.MALE;}
 		try {
-			if(json.has("picture_url")) 
-				picture = json.getString("picture_url");
+			if(json.has("accessToken"))
+				accessToken = json.getString("accessToken");
+		}catch (Exception e) {}
+		try {
+			if(json.has("score"))
+				score = json.getLong("score");
+		}catch (Exception e) {}
+		try {
+			if(json.has("gcmId"))
+				gcmId = json.getString("gcmId");
+		}catch (Exception e) {}
+		try {
+			if(json.has("date"))
+				date = json.getLong("date");
+		}catch (Exception e) {}
+		try {
+			if(json.has("photo")) 
+				picture = json.getString("photo");
 			if(picture == null || picture.equals("")) {
 				picture = DEFAULT_AVATAR;
 			}
 		} 
 		catch (Exception e) {}
-
 	}
 	
 	/**
@@ -76,11 +90,16 @@ public class AppUser implements Parcelable {
 	{
 		JSONObject json = new JSONObject();
 		try {json.put("id", id);} catch (Exception e) {}
-		try {json.put("display_name", name);} catch (Exception e) {}
-		try {json.put("picture_url", picture);} catch (Exception e) {}
-		try {json.put("facebook_id", fbId);} catch (Exception e) {}
-		try {json.put("phone_num", phoneNum);} catch (Exception e) {}
-		try {json.put("is_app_user", isAppUser);} catch (Exception e) {}
+		try {json.put("userName", name);} catch (Exception e) {}
+		try {json.put("photo", picture);} catch (Exception e) {}
+		try {json.put("date", date);} catch (Exception e) {}
+		try {json.put("mobileNumber", phoneNum);} catch (Exception e) {}
+		try {json.put("score", score);} catch (Exception e) {}
+		try {json.put("accessToken", accessToken);} catch (Exception e) {}
+		try {json.put("isMale", (gender==GENDER.MALE)?1:0);} catch (Exception e) {}
+		try {json.put("gcmId", gcmId);} catch (Exception e) {}
+		try {json.put("countryId", countryId);} catch (Exception e) {}
+		
 		return json;
 	}
 	
@@ -93,7 +112,14 @@ public class AppUser implements Parcelable {
 		JSONObject json = getJsonObject();
 		return json.toString();
 	}
-	
+
+	public String getPhoneNum() {
+		return phoneNum;
+	}
+
+	public void setPhoneNum(String phoneNum) {
+		this.phoneNum = phoneNum;
+	}
 
 	public String getId() {
 		return id;
@@ -111,6 +137,22 @@ public class AppUser implements Parcelable {
 		this.name = name;
 	}
 
+	public String getCountryId() {
+		return countryId;
+	}
+
+	public void setCountryId(String countryId) {
+		this.countryId = countryId;
+	}
+
+	public String getGcmId() {
+		return gcmId;
+	}
+
+	public void setGcmId(String gcmId) {
+		this.gcmId = gcmId;
+	}
+
 	public String getPicture() {
 		return picture;
 	}
@@ -119,27 +161,48 @@ public class AppUser implements Parcelable {
 		this.picture = picture;
 	}
 
-	public String getFbId() {
-		return fbId;
+	public String getAccessToken() {
+		return accessToken;
 	}
 
-	public void setFbId(String fbId) {
-		this.fbId = fbId;
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
 	}
 
-	
-	public boolean isFacebookActivated() {
-		if(fbId != null && !fbId.equals("")) {
-			return true;
-		}
-		else {
-			return false;
-		}
+	public GENDER getGender() {
+		return gender;
+	}
+
+	public void setGender(GENDER gender) {
+		this.gender = gender;
+	}
+
+	public Long getDate() {
+		return date;
+	}
+
+	public void setDate(Long date) {
+		this.date = date;
+	}
+
+	public long getScore() {
+		return score;
+	}
+
+	public void setScore(long score) {
+		this.score = score;
+	}
+
+	public static String getDefaultAvatar() {
+		return DEFAULT_AVATAR;
 	}
 	
 	
+	
+	
+	
 
-	@Override
+/*	@Override
 	public int describeContents() {
 		return 0;
 	}
@@ -162,7 +225,7 @@ public class AppUser implements Parcelable {
 		phoneNum = parcel.readString();
 		isAppUser= parcel.readInt();
 
-	}
+	}*/
 	
 
 	/*public static final Parcelable.Creator<AppUser> CREATOR = new Parcelable.Creator<AppUser>()

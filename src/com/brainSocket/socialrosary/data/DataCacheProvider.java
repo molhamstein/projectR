@@ -20,6 +20,7 @@ public class DataCacheProvider {
 	public static final String PREF_APP_USER  = "userMe" ;
 	public static final String PREF_ENROLLED_FRIENDS = "enroledFriends" ;
 	public static final String PREF_SETTINGS_NOTIFICATIONS = "settings_notifications" ;
+	public static final String PREF_API_ACCESS_TOKEN = "accessToken" ;
 	
 	
 	private static DataCacheProvider cacheProvider = null;
@@ -163,6 +164,49 @@ public class DataCacheProvider {
 	}
 	
 
+	
+	/**
+	 * Stores the accessToken received on login from the API 
+	 * in shared preferences
+	 * @param accessToken
+	 */
+	public void storeAccessToken(String accessToken)
+	{
+		try {
+			if(accessToken != null) {
+				prefDataEditor.putString(PREF_API_ACCESS_TOKEN, accessToken);
+				prefDataEditor.commit();
+			}
+		}
+		catch (Exception e) {}
+	}
+	
+	/**
+	 * Returns the cached API accessToken from Shared Preferences,
+	 *  null if it wasn't stored before
+	 */
+	public String getStoredAccessToken()
+	{
+		String apiAccessToken = null;
+		try {
+			apiAccessToken = prefData.getString(PREF_API_ACCESS_TOKEN, null);
+		}
+		catch(Exception e) {}
+		return apiAccessToken;
+	}
+	
+	/**
+	 * Removes the API accessToken stored in Shared Preferences
+	 */
+	public void removeAccessToken()
+	{
+		try {
+			prefDataEditor.remove(PREF_API_ACCESS_TOKEN);
+			prefDataEditor.commit();
+		}
+		catch (Exception e) {}
+	}	
+	
 	
 	
 	/// settings 

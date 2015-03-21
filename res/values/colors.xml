@@ -2,7 +2,7 @@
 <resources>
 
     <color name="global_bg_color">#fff3e9cd</color>
-    <color name="app_theme1">#eee0b6</color>
+    <color name="app_theme1">#28856e</color>
     <color name="app_theme2">#006852</color>
 
     <!-- btns -->

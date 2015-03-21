@@ -24,7 +24,9 @@ import android.widget.Toast;
 
 import com.brainSocket.socialrosary.RosaryApp.phoeNumCheckResult;
 import com.brainSocket.socialrosary.data.DataStore;
+import com.brainSocket.socialrosary.data.ServerAccess;
 import com.brainSocket.socialrosary.data.DataStore.DataRequestCallback;
+import com.brainSocket.socialrosary.data.ServerResult;
 import com.brainSocket.socialrosary.model.AppUser;
 import com.brainSocket.socialrosary.model.AppUser.GENDER;
 import com.facebook.HttpMethod;
@@ -58,8 +60,10 @@ public class LoginActivity extends AppBaseActivity implements OnClickListener {
 	CheckBox chkGender ;
 	
 	private LoginMode mode ;
-	private LOGIN_STAGE currentLoginStage ; 
-
+	private LOGIN_STAGE currentLoginStage ;
+	private boolean linkWithFB = false; // indicates if we should try to link with facebook whenSignUp is done ;
+	private String FbToken =null; 
+	
 	Fragment currentFrag ;
 	FragmentManager fragMgr ;
 
@@ -131,10 +135,13 @@ public class LoginActivity extends AppBaseActivity implements OnClickListener {
 		if (cancel) {
 			focusView.requestFocus();
 		} else { 
-			DataStore.getInstance().attemptSingnUp(attemptingPhoneNum, attemptingUserName, this.gender, null, null, apiLoginCallback);
+			
+			DataStore.getInstance().attemptSignUp(attemptingPhoneNum, attemptingUserName, gender, String.valueOf(android.os.Build.VERSION.SDK_INT), RosaryApp.VERSIOIN_ID, apiLoginCallback);
 		}
 	}
 	
+	
+		
 	public void attempLogIn() {
 		
 		attemptingPhoneNum = etPhoneNum.getText().toString();
@@ -257,7 +264,7 @@ public class LoginActivity extends AppBaseActivity implements OnClickListener {
 	
 	
 	//// temp Callback >>>> this is just a tempCallback cuz the API is not available yet 
-	DataRequestCallback apiLoginCallback = new DataRequestCallback() {
+/*	DataRequestCallback apiLoginCallback = new DataRequestCallback() {
 		@Override
 		public void onDataReady(HashMap<String, Object> data, boolean success) {
 			try {
@@ -278,26 +285,31 @@ public class LoginActivity extends AppBaseActivity implements OnClickListener {
 				attemptingLogin = false ;
 			}
 		}
-	};
+	};*/
 	
 	 
-/*	DataRequestCallback apiLoginCallback = new DataRequestCallback() {
+	DataRequestCallback apiLoginCallback = new DataRequestCallback() {
 		@Override
-		public void onDataReady(HashMap<String, Object> data, boolean success) {
+		public void onDataReady(ServerResult result, boolean success) {
 			try {
 				attemptingLogin = false ;
 				showProgress(false);
 				// success means data is retrived from server and does not indicate login success 
 				if(success){
-					AppUser user = (AppUser) data.get("user");
-					boolean loginSuccess = (Boolean) data.get("loginResult");
-					LoginMode loginMode = (LoginMode) data.get("loginMode");
-					if(loginMode == LoginMode.SIGNIN && !loginSuccess){ // user tried to login but server didnt recognize him "he isn't registered before"
+					HashMap<String, Object> data = result.getPairs() ;
+					AppUser user = (AppUser) data.get("appUser");
+					//boolean loginSuccess = (Boolean) data.get("loginResult");
+					//LoginMode loginMode = (LoginMode) data.get("loginMode");
+					if(result.getFlag().equals(ServerAccess.ERROR_CODE_userNotExists)){ // user tried to login but server didnt recognize him "he isn't registered before"
 						switchLoginStage(LOGIN_STAGE.ENTER_USER_DETAILS);
 					}else{
 						DataStore.getInstance().setMe(user);
-						setResult(RESULT_OK);
-						finish();
+						if(linkWithFB){
+							//DataStore.getInstance().linkWithFb();
+						}else{
+							setResult(RESULT_OK);
+							finish();
+						}
 					}
 				}else{
 					// optinonaly we may extract some error message from "data" in some cases
@@ -311,7 +323,7 @@ public class LoginActivity extends AppBaseActivity implements OnClickListener {
 				attemptingLogin = false ;
 			}
 		}
-	};*/
+	};
 	
 	
 	public class  LoginStatsCallback implements Session.StatusCallback {
@@ -331,11 +343,12 @@ public class LoginActivity extends AppBaseActivity implements OnClickListener {
 	    			  if (user != null) {
 	    				  //Toast.makeText(LoginActivity.this, "Authenticated to facebook ID "+ user.getId(), Toast.LENGTH_LONG).show();
   	    				  mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
-  	    				  String token = Session.getActiveSession().getAccessToken() ;
+  	    				  FbToken = Session.getActiveSession().getAccessToken() ;
   	    				  String name = user.getName();
   	    				  String gender = user.getProperty("gender").toString() ;
   	    				  GENDER genderType = ( gender.equalsIgnoreCase("male") )? GENDER.MALE : GENDER.FEMALE ;
-  	    				  DataStore.getInstance().attemptSingnUp(attemptingPhoneNum, name, genderType, user.getId(), token, apiLoginCallback);
+  	    				  DataStore.getInstance().attemptSignUp(attemptingPhoneNum, name, genderType, String.valueOf(android.os.Build.VERSION.SDK_INT), RosaryApp.VERSIOIN_ID, apiLoginCallback);
+  	    				  linkWithFB = true ;
 	    				}
 	    		  }
 	    		});

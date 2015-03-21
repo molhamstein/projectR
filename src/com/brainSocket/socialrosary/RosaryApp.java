@@ -10,6 +10,7 @@ public class RosaryApp extends Application {
 
 	private static Context AppContext ;
 	private static Activity currentAcivity ;
+	public static final String VERSIOIN_ID = "0.1";
 	
 	
 	@Override
@@ -44,4 +45,7 @@ public class RosaryApp extends Application {
 		}
 		return result;
 	}
+	
+	
+	
 }

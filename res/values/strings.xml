@@ -43,5 +43,21 @@
     <string name="tut_desc1">شرح عن البرنامج</string>
     <string name="tut_desc2">شرح عن البرنامج</string>
     <string name="tut_desc3">شرح عن البرنامج</string>
+    
+    <!-- MAIN -->
+    <string name="main_seg1">الرئيسية</string>
+    <string name="main_seg2">حلقات الذكر</string>
+    <string name="main_hadeeth_temp">حدبث شريف ... حديث شريف</string>
+    
+    <!-- Drawer -->
+	<string name="drawer_main">main</string>
+	<string name="drawer_todo">TODO</string>
+	<string name="drawer_history">History</string>
+	<string name="drawer_settings">Settings</string>
+	<string name="drawer_about">About</string>
+	
+	<!-- loading  -->
+	<string name="loading_loading">جاري التحميل .....</string>
+    
 
 </resources>
