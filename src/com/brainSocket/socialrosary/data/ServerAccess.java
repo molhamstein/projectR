@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import android.content.Context;
 
 import com.brainSocket.socialrosary.RosaryApp;
+import com.brainSocket.socialrosary.model.AppEvent;
 import com.brainSocket.socialrosary.model.AppSession;
 import com.brainSocket.socialrosary.model.AppUser;
 
@@ -176,6 +177,38 @@ public class ServerAccess {
 		return result;
 	}
 	
+	public ServerResult setGcmId(String accessToken, String gcmId) {
+		ServerResult result = new ServerResult();
+		AppUser me  = null ;
+		boolean success = false;
+		try {
+			// parameters
+			JSONObject jsonPairs = new JSONObject();
+			jsonPairs.put("accessToken", accessToken);
+			jsonPairs.put("gcmId", gcmId);
+			// url
+			String url = BASE_SERVICE_URL + "/users/setGcmId";
+			// send request
+			String response = sendPostRequest(url, jsonPairs);
+			// parse response
+			if (response != null && !response.equals("")) { // check if response is empty
+				JSONObject jsonResponse = new JSONObject(response);
+				result.setFlag(jsonResponse.getString(FLAG));
+				if(jsonResponse.has("user") && !jsonResponse.isNull("user")){
+					me = new AppUser(jsonResponse.getJSONObject("user"));
+					success = true ;
+				}
+			} else {
+				result.setFlag(CONNECTION_ERROR_CODE);
+			}
+		} catch (Exception e) {
+			result.setFlag(RESPONCE_FORMAT_ERROR_CODE);
+		}
+		result.addPair("success", success);
+		return result;
+	}
+	
+	
 	public ServerResult getSessionsByDate(String accessToken, long date) {
 		ServerResult result = new ServerResult();
 		ArrayList<AppSession> sessions = null ;
@@ -213,7 +246,36 @@ public class ServerAccess {
 
 		return result;
 	}
+	
+	public ServerResult getSessionEvents(String accessToken, String sessionId) {
+		ServerResult result = new ServerResult();
+		ArrayList<AppEvent> sessionEvents = null ;
+		try {
+			JSONObject jsonPairs = new JSONObject();
+			jsonPairs.put("accessToken", accessToken);
+			jsonPairs.put("sessionId", sessionId);			
+			String url = BASE_SERVICE_URL + "/sessions/getSessionEvents";
+			String response = sendPostRequest(url, jsonPairs);
+			if (response != null && !response.equals("")) {
+				JSONObject jsonResponse = new JSONObject(response);
+				result.setFlag(jsonResponse.getString(FLAG));
+				if(jsonResponse.has("events")){
+					sessionEvents = new ArrayList<AppEvent>() ;
+					if(!jsonResponse.isNull("events")){
+						JSONArray jsonArray = jsonResponse.getJSONArray("events");
+						for (int i = 0; i < jsonArray.length(); i++) {
+							AppEvent event = new AppEvent(jsonArray.getJSONObject(i));
+							sessionEvents.add(event) ;
+						}
+					}
+				}
+			} else {result.setFlag(CONNECTION_ERROR_CODE);}
+		} catch (Exception e) {result.setFlag(RESPONCE_FORMAT_ERROR_CODE);}
+		result.addPair("events", sessionEvents);
+		return result;
+	}
 
+	
 
 /*	public HashMap<String, Object> getMe(String accessToken) {
 		HashMap<String, Object> mapResult = new HashMap<String, Object>();
@@ -252,15 +314,14 @@ public class ServerAccess {
 	 * @param sessionAccessToken
 	 * @return 
 	 */
-	public ServerResult importFacebookFriends(String userId,
-			String sessionAccessToken) {
+	public ServerResult importFacebookFriends(String accessToken, String sessionAccessToken) {
 		ServerResult result = new ServerResult();
 		HashMap<String, String> facebookFirends = new HashMap<String, String>();
 		try {
 			// parameters
 			JSONObject jsonPairs = new JSONObject();
-			jsonPairs.put("userId", userId);
-			jsonPairs.put("sessionAccessToken", sessionAccessToken);
+			jsonPairs.put("facebookAccessToken", accessToken);
+			jsonPairs.put("facebookAccessToken", sessionAccessToken);
 			// url
 			String url = BASE_SERVICE_URL + "/users/importFacebookFriends";
 			// send request
@@ -271,7 +332,7 @@ public class ServerAccess {
 				String flag = jsonResponse.getString(FLAG);
 				result.setFlag(flag);
 				if(!flag.equals("-1")) {
-					JSONArray fbFriendsJson = jsonResponse.getJSONArray("users");
+					JSONArray fbFriendsJson = jsonResponse.getJSONArray("newFriends");
 					for(int i=0;i<fbFriendsJson.length();++i){
 						JSONObject fbFriend = fbFriendsJson.getJSONObject(i);
 						facebookFirends.put(fbFriend.getString("id"), fbFriend.getString("userName"));
@@ -341,14 +402,14 @@ public class ServerAccess {
 		}
 		return result;
 	}
-	public ServerResult getTodayHadith(String userId){
+	public ServerResult getTodayHadith(String accessToken){
 		ServerResult result = new ServerResult();
-		String title = null;
+		int type = 1;
 		String value = null;
 		try {
 			// parameters
 			JSONObject jsonPairs = new JSONObject();
-			jsonPairs.put("userId", userId);						
+			jsonPairs.put("accessToken", accessToken);						
 			// url
 			String url = BASE_SERVICE_URL + "/contents/getTodayHadith";
 			// send request
@@ -359,8 +420,8 @@ public class ServerAccess {
 				String flag = jsonResponse.getString(FLAG);
 				result.setFlag(flag);
 				if(flag.equals("0")) {
-					JSONObject valueObject = jsonResponse.getJSONObject("value");
-					title = valueObject.getString("title");
+					JSONObject valueObject = jsonResponse.getJSONObject("content");
+					type = valueObject.getInt("contentTypeId");
 					value = valueObject.getString("value");
 				}
 			} else {
@@ -369,7 +430,7 @@ public class ServerAccess {
 		} catch (Exception e) {
 			result.setFlag(RESPONCE_FORMAT_ERROR_CODE);
 		}
-		result.addPair("title", title);
+		result.addPair("type", type);
 		result.addPair("value", value);
 		return result;
 	}
@@ -666,7 +727,7 @@ public class ServerAccess {
 	 * @param regId
 	 * The registration Id received from the GCM provider
 	 */
-	public void sendGCMRegistratinId(String apiAccessToken, String regId/*, String userId*/)
+	/*public void sendGCMRegistratinId(String apiAccessToken, String regId, String userId)
 	{
 		try {
 			if(regId != null && !regId.isEmpty()) {
@@ -675,17 +736,17 @@ public class ServerAccess {
 				jsonPairs.put("token", regId);
 				jsonPairs.put("type", "3");
 				
-				/*List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 				pairs.add(new BasicNameValuePair("token", regId));
-				pairs.add(new BasicNameValuePair("type", "3"));*/
+				pairs.add(new BasicNameValuePair("type", "3"));
 				// url
 				String url = BASE_SERVICE_URL + "/users/register_device?access_token=" + apiAccessToken;
 				// send request
-				/*String response =*/ sendPostRequest(url, jsonPairs);
+				String response = sendPostRequest(url, jsonPairs);
 			}
 		}
 		catch (Exception e) {}
-	}
+	}*/
 	
 	
 	// Request executers //

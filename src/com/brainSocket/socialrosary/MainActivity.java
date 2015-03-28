@@ -3,6 +3,7 @@ package com.brainSocket.socialrosary;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -55,11 +55,6 @@ public class MainActivity extends AppBaseActivity implements OnClickListener, Ho
  	
  	/// Temp dataHolders 	
 
-
-	
-	
-	
-	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +118,7 @@ public class MainActivity extends AppBaseActivity implements OnClickListener, Ho
 			break;*/
 		}
 	}
+	
 	
 	void switchSection(FRAG_TYPE section){
 		if(currentFrag == section)
@@ -330,14 +326,14 @@ public class MainActivity extends AppBaseActivity implements OnClickListener, Ho
 	
 	@Override
 	public void onBackStackChanged() {
-		int  entrys = getFragmentManager().getBackStackEntryCount() ;
+		int  entrys = getSupportFragmentManager().getBackStackEntryCount() ;
 		
 		try {
 			String entryName ;
 			if(entrys == 0)
 				entryName = FRAG_TYPE.MAIN.name();
 			else
-				entryName = getFragmentManager().getBackStackEntryAt(entrys-1).getName() ;
+				entryName = getSupportFragmentManager().getBackStackEntryAt(entrys-1).getName() ;
 			FRAG_TYPE fragType = FRAG_TYPE.valueOf(entryName) ;
 			if( fragType != null ){
 				currentFrag = fragType;
@@ -370,6 +366,16 @@ public class MainActivity extends AppBaseActivity implements OnClickListener, Ho
 		}else{
 			llLoading.setVisibility(View.GONE);
 		}
+	}
+
+
+	@Override
+	public void showConversation(String conversationId) {
+		if(conversationId == null)
+			return ;
+		Intent i = new Intent(this, ConversationActivity.class);
+		i.putExtra("sessionId", conversationId);
+		startActivity(i);
 	}
 	
 

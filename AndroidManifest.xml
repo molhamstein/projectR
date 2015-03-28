@@ -39,6 +39,7 @@
         </activity>
         <activity android:name=".contacts.ContactsList" >
         </activity>
+        <activity android:name="ConversationActivity"></activity>
     </application>
 
 </manifest>

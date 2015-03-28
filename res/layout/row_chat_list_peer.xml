@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="4dp"
+    android:paddingTop="4dp" >
+
+    <FrameLayout
+        android:id="@+id/vImgContainer"
+        android:layout_width="@dimen/conversation_event_picture_size"
+        android:layout_height="@dimen/conversation_event_picture_size"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        
+        android:layout_marginLeft="10dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/bg_photo_normal" />
+
+        <com.brainSocket.socialrosary.views.MLRoundedImageView
+            android:id="@+id/ivPeer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="7dp"
+            android:clickable="false"
+            android:scaleType="fitXY"
+            android:src="@drawable/img_contact" />
+    </FrameLayout>
+
+    <com.brainSocket.socialrosary.views.TextViewCustomFont
+        android:id="@+id/tvPeer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="20dp"
+        android:layout_toRightOf="@id/vImgContainer"
+        android:background="@drawable/chat_buble_peer"
+        android:padding="10dp"
+        android:singleLine="false"
+        app:fontId="2" />
+
+</RelativeLayout>

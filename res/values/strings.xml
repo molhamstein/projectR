@@ -13,6 +13,10 @@
     <!-- warnings -->
     <string name="pleas_wait">الرجاءالإنتظار</string>
 
+    <!-- conversation -->
+    <string name="conversation_btn_send_part1">ارسل ذكرا لى </string>
+    <string name="conversation_no_events">ليس هناك أحداث سابقة لعرضها</string>
+    
     <!-- LOG-IN -->
     <string name="action_sign_in_register"><b>تسجيل الدخول</b> أو الإشتراك</string>
     <string name="action_sign_in_short">تسجيل الدخول</string>

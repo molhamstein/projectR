@@ -3,14 +3,14 @@ package com.brainSocket.socialrosary.fragments;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -19,10 +19,10 @@ import android.widget.TextView;
 import com.brainSocket.socialrosary.AppBaseActivity;
 import com.brainSocket.socialrosary.HomeCallbacks;
 import com.brainSocket.socialrosary.R;
-import com.brainSocket.socialrosary.contacts.ContactsList;
 import com.brainSocket.socialrosary.data.DataStore;
+import com.brainSocket.socialrosary.data.DataStore.DataRequestCallback;
 import com.brainSocket.socialrosary.data.DataStore.DataStoreUpdatListener;
-import com.brainSocket.socialrosary.model.AppContact;
+import com.brainSocket.socialrosary.data.ServerResult;
 import com.brainSocket.socialrosary.model.AppContact.SOCIAL_MEDIA_ACCOUNT_TYPE;
 import com.brainSocket.socialrosary.model.AppConversation;
 
@@ -35,7 +35,7 @@ public class FragMain extends Fragment implements OnClickListener{
 	View rlSegment1,rlSegment2 ;
 	ListView lvConversations ;
 	
-	TextView tvSeg1, tvSeg2 ;
+	TextView tvSeg1, tvSeg2, tvHadeeth ;
 	
 	SEGMENT_TYPE currentSegment ;
 	
@@ -51,16 +51,25 @@ public class FragMain extends Fragment implements OnClickListener{
 			}	
 		}
 	};
+	DataRequestCallback todaHadeethCallback = new DataRequestCallback() {
+		@Override
+		public void onDataReady(ServerResult data, boolean success) {
+			if(success){
+				String hadeeth = (String) data.getValue("value");
+				tvHadeeth.setText(hadeeth);
+			}
+		}
+	};
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_main, container, false);
 	}
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		init();
+		DataStore.getInstance().getTodayHadeeth(todaHadeethCallback);
 	}
 
 	public void setHomeCallback(HomeCallbacks callback){
@@ -73,11 +82,14 @@ public class FragMain extends Fragment implements OnClickListener{
 		tvSeg1 = (TextView) getView().findViewById(R.id.tvSegment1);
 		tvSeg2 = (TextView) getView().findViewById(R.id.tvSegment2);
 		lvConversations = (ListView) getView().findViewById(R.id.lvContacts);
+		tvHadeeth = (TextView) getView().findViewById(R.id.tvHadeeth);
 		
 		tvSeg1.setOnClickListener(this);
 		tvSeg2.setOnClickListener(this);
 		
 		adapter = new ConversationsAdapter(converastions) ;
+		lvConversations.setAdapter(adapter);
+		lvConversations.setOnItemClickListener(adapter);
 		
 		// initial state ;
 		rlSegment1.setVisibility(View.VISIBLE);
@@ -99,6 +111,12 @@ public class FragMain extends Fragment implements OnClickListener{
 		DataStore.getInstance().removeUpdateBroadcastListener(dataUpdateListener);
 	}
 	
+	public HomeCallbacks getHomeCallback() {
+		if(homeCallback == null)
+			homeCallback = (HomeCallbacks) (getActivity());
+		return homeCallback;
+	}
+	
 	private void switchSegment(SEGMENT_TYPE newSegment){
 		if(currentSegment == newSegment)
 			return;
@@ -111,10 +129,11 @@ public class FragMain extends Fragment implements OnClickListener{
 		case CONVERSATIONS:
 			rlSegment1.setVisibility(View.GONE);
 			rlSegment2.setVisibility(View.VISIBLE);
-			Intent i = new Intent(getActivity(),ContactsList.class);
-			startActivity(i);;
+			//Intent i = new Intent(getActivity(),ContactsList.class);
+			//startActivity(i);;
 			break;
 		}
+		currentSegment = newSegment ;
 		
 	}
 	
@@ -132,7 +151,7 @@ public class FragMain extends Fragment implements OnClickListener{
 	}
 	
 	
-	private class ConversationsAdapter extends BaseAdapter /*implements Filterable*/{
+	private class ConversationsAdapter extends BaseAdapter implements OnItemClickListener/*implements Filterable*/{
 
 		LayoutInflater inflater ;
 		ArrayList<AppConversation> conversations ;
@@ -189,17 +208,21 @@ public class FragMain extends Fragment implements OnClickListener{
 		        }else{
 				holder = (Holder) convertView.getTag() ;
 			}
-			 
-			AppConversation conversation = conversations.get(position); 
-     		holder.tvName.setText(conversation.getName());
-			
-     		SOCIAL_MEDIA_ACCOUNT_TYPE contactType = conversation.getNetwork() ; 
-     		if(contactType == SOCIAL_MEDIA_ACCOUNT_TYPE.WHATSAP ){
-     			holder.ivNetworkIcon.setVisibility(View.VISIBLE);
-     		}else if(contactType == SOCIAL_MEDIA_ACCOUNT_TYPE.VIBER ){
-     			holder.ivPhoto.setVisibility(View.VISIBLE);
-     			
-     		}
+	
+			 try {
+				
+				AppConversation conversation = conversations.get(position); 
+	     		holder.tvName.setText(conversation.getName());
+				
+	     		SOCIAL_MEDIA_ACCOUNT_TYPE contactType = conversation.getNetwork() ; 
+	     		if(contactType == SOCIAL_MEDIA_ACCOUNT_TYPE.WHATSAP ){
+	     			holder.ivNetworkIcon.setVisibility(View.VISIBLE);
+	     		}else if(contactType == SOCIAL_MEDIA_ACCOUNT_TYPE.VIBER ){
+	     			holder.ivPhoto.setVisibility(View.VISIBLE);
+	     			
+	     		}
+			} catch (Exception e) {}
+
 			return convertView;
 		}
 		
@@ -207,6 +230,15 @@ public class FragMain extends Fragment implements OnClickListener{
 		class Holder {
 			TextView tvName ;
 			ImageView ivPhoto, ivNetworkIcon;
+		}
+
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			AppConversation conv = converastions.get(position);
+			if(conv.isHasSession()){
+				getHomeCallback().showConversation(conv.getSession().getIdGlobal());
+			}
 		}
 
 

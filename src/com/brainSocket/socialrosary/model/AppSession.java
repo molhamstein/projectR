@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.brainSocket.socialrosary.RosaryApp;
+import com.brainSocket.socialrosary.data.DataStore;
 import com.brainSocket.socialrosary.model.AppContact.SOCIAL_MEDIA_ACCOUNT_TYPE;
 import com.brainSocket.socialrosary.model.AppConversation.CONVERSATION_TYPE;
 
@@ -60,7 +62,8 @@ public class AppSession {
 				peers = new ArrayList<AppContact>() ;
 				for (int i = 0; i < jsonArray.length(); i++) {
 					AppContact peer = new AppContact( jsonArray.getJSONObject(i) );
-					peers.add(peer) ;
+					if(!peer.getGlobalId().equals( DataStore.meId))
+						peers.add(peer) ;
 				}
 			}
 		} catch (Exception e) {}

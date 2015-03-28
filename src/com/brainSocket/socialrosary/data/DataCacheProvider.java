@@ -2,6 +2,9 @@
 package com.brainSocket.socialrosary.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,6 +13,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.brainSocket.socialrosary.RosaryApp;
+import com.brainSocket.socialrosary.model.AppEvent;
 import com.brainSocket.socialrosary.model.AppUser;
 
 public class DataCacheProvider {
@@ -21,7 +25,8 @@ public class DataCacheProvider {
 	public static final String PREF_ENROLLED_FRIENDS = "enroledFriends" ;
 	public static final String PREF_SETTINGS_NOTIFICATIONS = "settings_notifications" ;
 	public static final String PREF_API_ACCESS_TOKEN = "accessToken" ;
-	
+	public static final String PREF_PHOTO_CACHE_CLEARED = "image_cache_clear" ;
+	public static final String PREF_MAP_SESSIOINS_EVENTS = "sessionsEvents";
 	
 	private static DataCacheProvider cacheProvider = null;
 	// shared preferences
@@ -57,6 +62,33 @@ public class DataCacheProvider {
 	
 	//
 	
+	
+	/**
+	 * Stores the timestamp of the last photo cache clear
+	 */
+	public void storePhotoClearedCacheTimestamp(long timestamp)
+	{
+		try {
+			prefDataEditor.putLong(PREF_PHOTO_CACHE_CLEARED, timestamp);
+			prefDataEditor.commit();
+		}
+		catch (Exception e) {}
+	}
+	
+	/**
+	 * Returns the stored timestamp of the last photo cache clear
+	 */
+	public long getStoredPhotoClearedCacheTimestamp()
+	{
+		long timestamp = 0;
+		try {
+			timestamp = prefData.getLong(PREF_PHOTO_CACHE_CLEARED, 0);
+		}
+		catch (Exception e) {}
+		return timestamp;
+	}
+	
+	
 	public boolean isFirstTime() {
 		boolean res = false;
 		try {
@@ -71,6 +103,68 @@ public class DataCacheProvider {
 	}
 	
 	
+	public void storeSessionsEvents(HashMap<String, ArrayList<AppEvent>> map) {
+		try {
+				JSONObject obj = sessionsEventsMapToJSON(map);
+				String str = obj.toString() ;
+				prefDataEditor.putString(PREF_MAP_SESSIOINS_EVENTS, str);
+				prefDataEditor.commit();
+		}
+		catch (Exception e) {}
+	}
+	
+	public HashMap<String, ArrayList<AppEvent>> getStoredSessionsEvents() {
+		HashMap<String, ArrayList<AppEvent>> map = null;
+		try {
+			String str = prefData.getString(PREF_MAP_SESSIOINS_EVENTS, null);
+			if(str != null) {
+				JSONObject json = new JSONObject(str);
+				map = jsonToSessionsEventsMap(json);
+			}
+		}
+		catch (Exception e) {}
+		return map;
+	}
+	
+	
+		
+	public static HashMap<String, ArrayList<AppEvent>> jsonToSessionsEventsMap(JSONObject object) {
+	    HashMap<String, ArrayList<AppEvent>> map = new HashMap<String, ArrayList<AppEvent>>();
+	    try {
+		    Iterator<String> keysItr = object.keys();
+		    while(keysItr.hasNext()) {
+		        String key = keysItr.next();
+		        ArrayList<AppEvent> events = new ArrayList<AppEvent>();
+		        JSONArray jsonArray = object.getJSONArray(key);
+		        for (int i = 0; i < jsonArray.length(); i++) {
+					AppEvent event = new AppEvent(jsonArray.getJSONObject(i));
+					events.add(event);
+				}
+		        map.put(key, events);
+		    }
+	    } catch (Exception e) {}
+	    return map;
+	}
+
+	public static JSONObject sessionsEventsMapToJSON(HashMap<String, ArrayList<AppEvent>> map) {
+	    JSONObject jsonObj = new JSONObject() ;
+	    try {
+		    for(Map.Entry<String, ArrayList<AppEvent>> entry : map.entrySet() ){
+		        ArrayList<AppEvent> events = (ArrayList<AppEvent>) map.get(entry.getKey());
+		        JSONArray jsonArray = new JSONArray() ; 
+		        for (int i = 0; i < events.size(); i++) {
+					AppEvent event = events.get(i);
+					jsonArray.put(event.getJsonString());
+				}
+		        map.put(entry.getKey(), events);
+		    }
+	    } catch (Exception e) {}
+	    return jsonObj;
+	}
+	
+	
+	
+	
 	// USER //
 	
 	/**
@@ -83,7 +177,8 @@ public class DataCacheProvider {
 				String str = me.getJsonString();
 				prefDataEditor.putString(PREF_APP_USER, str);
 				prefDataEditor.commit();
-			}
+			}else
+				removeStoredMe();
 		}
 		catch (Exception e) {}
 	}

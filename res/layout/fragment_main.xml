@@ -72,12 +72,14 @@
         <RelativeLayout
             android:id="@+id/RlSegment2"
             android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
             android:layout_height="match_parent" >
 
             <ListView
                 android:id="@+id/lvContacts"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent"
+                android:dividerHeight="0dp" >
             </ListView>
         </RelativeLayout>
     </LinearLayout>

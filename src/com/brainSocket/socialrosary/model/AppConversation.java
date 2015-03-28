@@ -34,6 +34,7 @@ public class AppConversation {
 		hasSession = true ;
 		conversationType = session.getType() ;
 		contacts = session.getPeers() ;
+		this.session =session ; 
 	}
 	
 	public AppConversation (AppContact contact ){
@@ -54,6 +55,10 @@ public class AppConversation {
 			return contacts.get(0).getName() ;
 		}
 	}
+		
+	public AppSession getSession() {
+		return session;
+	}
 	
 	public String getUnreadEventsTitle(){
 		if(hasSession){
@@ -68,6 +73,10 @@ public class AppConversation {
 		}else{
 			return contacts.get(0).getNetwork() ;
 		}
+	}
+	
+	public boolean isHasSession() {
+		return hasSession;
 	}
 	
 	

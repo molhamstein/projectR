@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/vMe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/row_chat_list_me" />
+
+    <include
+        android:id="@+id/vPeer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/row_chat_list_peer" />
+    
+    <include
+        android:id="@+id/vInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/row_chat_list_info" />
+    
+</LinearLayout>

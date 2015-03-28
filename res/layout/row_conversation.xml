@@ -4,51 +4,87 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp" >
+    android:clipChildren="false" >
 
-    <ImageView
-        android:id="@+id/ivPhoto"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="8dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/contact_photo" />
-
-    <com.brainSocket.socialrosary.views.TextViewCustomFont
-        android:id="@+id/tvName"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/ivPhoto"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_toRightOf="@id/ivPhoto"
-        android:text="Name"
-        android:textSize="@dimen/ts_text_normal"
-        app:fontId="2" />
+        android:layout_alignRight="@+id/vPhotoContainer"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/bg_list"
+        android:clipChildren="false"
+        android:paddingBottom="10dp"
+        android:paddingTop="5dp" >
 
-    <com.brainSocket.socialrosary.views.TextViewCustomFont
-        android:id="@+id/tvDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvName"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_toRightOf="@id/ivPhoto"
-        android:text="Date"
-        android:textSize="@dimen/ts_text_normal"
-        app:fontId="2" />
+        <com.brainSocket.socialrosary.views.TextViewCustomFont
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/conversations_list_name_margin"
+            android:layout_marginTop="12dp"
+            android:text="Name"
+            android:textColor="@color/gray_dark"
+            android:textSize="@dimen/ts_text_normal"
+            app:fontId="2" />
 
-    <ImageView
-        android:id="@+id/ivNetworkIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignBottom="@id/ivPhoto"
-        android:layout_marginBottom="8dp"
-        android:src="@drawable/ic_launcher"/>
+        <com.brainSocket.socialrosary.views.TextViewCustomFont
+            android:id="@+id/tvDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvName"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/conversations_list_name_margin"
+            android:layout_marginTop="8dp"
+            android:text="Date"
+            android:textSize="@dimen/ts_text_normal"
+            app:fontId="2" />
 
+        <com.brainSocket.socialrosary.views.TextViewCustomFont
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="12dp"
+            android:text="Date"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/ts_text_normal"
+            app:fontId="2" />
+
+        <ImageView
+            android:id="@+id/ivNetworkIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvDate"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="20dp"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_launcher" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/vPhotoContainer"
+        android:layout_width="@dimen/conversations_list_height"
+        android:layout_height="@dimen/conversations_list_height"
+        android:layout_alignParentRight="true" >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/bg_photo_normal" />
+
+        <com.brainSocket.socialrosary.views.MLRoundedImageView
+            android:id="@+id/ivPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="7dp"
+            android:clickable="false"
+            android:scaleType="fitXY"
+            android:src="@drawable/contact_photo" />
+    </FrameLayout>
 
 </RelativeLayout>

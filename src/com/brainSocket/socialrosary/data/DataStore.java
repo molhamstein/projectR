@@ -12,6 +12,7 @@ import com.brainSocket.socialrosary.data.GCMHandler.AppGcmListener;
 import com.brainSocket.socialrosary.model.AppContact;
 import com.brainSocket.socialrosary.model.AppConversation;
 import com.brainSocket.socialrosary.model.AppConversation.CONVERSATION_TYPE;
+import com.brainSocket.socialrosary.model.AppEvent;
 import com.brainSocket.socialrosary.model.AppSession;
 import com.brainSocket.socialrosary.model.AppUser;
 import com.brainSocket.socialrosary.model.AppUser.GENDER;
@@ -38,6 +39,8 @@ public class DataStore {
 	//private ArrayList<AppContact> arrayEnrolledFriends = null;
 	private ArrayList<AppContact> contacts ;
 	private ArrayList<AppConversation> converastions ;
+	
+	private HashMap<String, ArrayList<AppEvent>> mapSessionEvents ;
 /*	private ArrayList<String> whatsAppFriendsLocalIds = null ;
 	private ArrayList<String> viberFriendsLocalIds = null ;
 */	private AppUser me = null;
@@ -81,6 +84,7 @@ public class DataStore {
 		me = cacheProvider.getStoredMe() ;
 		apiAccessToken = cacheProvider.getStoredAccessToken();
 		meId = me.getId() ;
+		mapSessionEvents = cacheProvider.getStoredSessionsEvents() ;
 		//arrayEnrolledFriends = cacheProvider.getStoredEnrolledFriends() ;
 	}
 	
@@ -255,9 +259,72 @@ public class DataStore {
 		}).start();	
 	}
 	
+	public void connectWithFB(final String fbAccessToken,  final DataRequestCallback callback) {
+		
+		new Thread( new Runnable() { 
+			@Override
+			public void run() {
+				boolean success = true ;
+				ServerResult result = serverHandler.importFacebookFriends(apiAccessToken, fbAccessToken);
+				HashMap<String, Object> pairs = result.getPairs() ;
+				if(result.connectionFailed()){
+					success = false ;
+				}else{
+					//TODO : add contacts if not already added
+				}
+				if(callback != null)
+					invokeCallback(callback, success, result); 
+			}
+		}).start();	
+	}
+	
+	public void getTodayHadeeth(final DataRequestCallback callback) {
+		new Thread( new Runnable() { 
+			@Override
+			public void run() {
+				boolean success = true ;
+				ServerResult result = serverHandler.getTodayHadith(apiAccessToken);
+				if(result.connectionFailed()){
+					success = false ;
+				}else{
+				}
+				invokeCallback(callback, success, result);
+			}
+		}).start();	
+	}
+	
+	public void requestSessionEvents(final String SessionId, final DataRequestCallback callback) {
+		new Thread( new Runnable() { 
+			@Override
+			public void run() {
+				
+				boolean success = true ;
+				ServerResult result = serverHandler.getSessionEvents(apiAccessToken, SessionId);
+				if(result.connectionFailed()){
+					success = false ;
+				}else{
+					if(mapSessionEvents == null)
+						mapSessionEvents = new HashMap<String, ArrayList<AppEvent>>() ;
+					ArrayList<AppEvent> events = (ArrayList<AppEvent>) result.getValue("events") ;
+					mapSessionEvents.put(SessionId, events) ;
+					cacheProvider.storeSessionsEvents(mapSessionEvents);
+				}
+				invokeCallback(callback, success, result);
+			}
+		}).start();	
+	}
+	
+	public ArrayList<AppEvent> getSessionEvents(String sessionId) {
+		if(mapSessionEvents == null)
+			mapSessionEvents = new HashMap<String, ArrayList<AppEvent>>() ;
+		if(sessionId!= null && mapSessionEvents.containsKey(sessionId))
+			return mapSessionEvents.get(sessionId);
+		return null;
+	}
+	
 	// GCM
 	
-	void requestGCMRegsitrationId() {
+	public void requestGCMRegsitrationId() {
 		
 		GCMHandler.requestGCMRegistrationId(RosaryApp.getAppContext(), new AppGcmListener() {			
 			@Override
@@ -286,8 +353,8 @@ public class DataStore {
 	 */
 	public void sendGCMRegistratinId(String regId) {
 		try {
-			if( regId != null && !regId.isEmpty()) {
-				serverHandler.sendGCMRegistratinId(apiAccessToken, regId/*, appUser.getId()*/);
+			if( regId != null && !regId.equals("")) {
+				serverHandler.setGcmId(apiAccessToken, regId);//sendGCMRegistratinId(apiAccessToken, regId/*, appUser.getId()*/);
 			}
 		}
 		catch (Exception e) {}
@@ -306,28 +373,27 @@ public class DataStore {
 			ServerResult result = serverHandler.getSessionsByDate(apiAccessToken, 0);
 			HashMap<String, Object> pairs = result.getPairs() ;
 			if(result.connectionFailed()){
-				
-				
+				sessions = new ArrayList<AppSession>() ;
 			}else{
 				sessions = (ArrayList<AppSession>) result.getPairs().get("sessions") ;
-				conversations = new ArrayList<AppConversation>() ;
-				ArrayList<String> usersWithSessionsId = new ArrayList<String>() ;
-				for (AppSession appSession : sessions) {
-					AppConversation conversation = new AppConversation(appSession) ;
-					conversations.add(conversation) ;
-					if(appSession.getType() == CONVERSATION_TYPE.SINGLE){
-						usersWithSessionsId.add(appSession.getPeers().get(0).getPhoneNum());
-					}
+			}
+			
+			conversations = new ArrayList<AppConversation>() ;
+			ArrayList<String> usersWithSessionsId = new ArrayList<String>() ;
+			for (AppSession appSession : sessions) {
+				AppConversation conversation = new AppConversation(appSession) ;
+				conversations.add(conversation) ;
+				if(appSession.getType() == CONVERSATION_TYPE.SINGLE){
+					usersWithSessionsId.add(appSession.getPeers().get(0).getPhoneNum());
 				}
-				
-				// adding contacts with no session to the Conversations  
-				for (AppContact contatc : contacts) {
-					if(!usersWithSessionsId.contains(contatc.getPhoneNum())){
-						AppConversation con = new AppConversation(contatc) ;
-						conversations.add(con);
-					}
+			}
+			
+			// adding contacts with no session to the Conversations  
+			for (AppContact contatc : contacts) {
+				if(!usersWithSessionsId.contains(contatc.getPhoneNum())){
+					AppConversation con = new AppConversation(contatc) ;
+					conversations.add(con);
 				}
-				
 			}
 		}catch(Exception e){
 			e.printStackTrace();

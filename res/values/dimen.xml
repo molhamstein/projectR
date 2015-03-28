@@ -19,6 +19,17 @@
     <dimen name="corner_radius_normal">8dp</dimen>
     <dimen name="corner_radius_small">3dp</dimen>
 
+    <!-- CONVERSATIONS -->
+    <dimen name="conversations_list_height">75dp</dimen>
+    <dimen name="conversations_list_name_margin">65dp</dimen>
+    
+    
+    <!-- conversatoin details -->
+    <dimen name="conversation_event_picture_size">50dp</dimen>
+	 
+    
+    
+    
     <!-- Flat Btn -->
     <dimen name="fbutton_default_conner_radius">8dp</dimen>
     <dimen name="fbutton_default_padding_left">10dp</dimen>

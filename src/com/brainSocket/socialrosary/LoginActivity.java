@@ -304,12 +304,15 @@ public class LoginActivity extends AppBaseActivity implements OnClickListener {
 						switchLoginStage(LOGIN_STAGE.ENTER_USER_DETAILS);
 					}else{
 						DataStore.getInstance().setMe(user);
-						if(linkWithFB){
-							//DataStore.getInstance().linkWithFb();
+						DataStore.getInstance().requestGCMRegsitrationId();
+						if(linkWithFB && FbToken != null){
+							DataStore.getInstance().connectWithFB(FbToken, null);
+							
 						}else{
-							setResult(RESULT_OK);
-							finish();
+							
 						}
+						setResult(RESULT_OK);
+						finish();
 					}
 				}else{
 					// optinonaly we may extract some error message from "data" in some cases
