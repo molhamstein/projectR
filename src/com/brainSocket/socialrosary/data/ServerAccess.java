@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.view.accessibility.AccessibilityEventSource;
 
 import com.brainSocket.socialrosary.RosaryApp;
 import com.brainSocket.socialrosary.model.AppEvent;
@@ -103,6 +104,8 @@ public class ServerAccess {
 	    return false;
 	}*/
 
+	
+	
 	// API calls // ------------------------------------------------
 	
 	
@@ -348,18 +351,53 @@ public class ServerAccess {
 		return result;
 	}
 
-	public ServerResult sendZekrToUsers(String userId, List<String> toUsers, String ZekrTitle, String zekrValue){
+	public ServerResult addSelfZeker(String accessToken,int counter,int contentId){
 		ServerResult result = new ServerResult();
 		try {
 			// parameters
 			JSONObject jsonPairs = new JSONObject();
-			jsonPairs.put("userId", userId);
-			JSONArray destinationUsers = new JSONArray(toUsers);
-			jsonPairs.put("destinationUserIds", destinationUsers);
-			JSONObject zeker = new JSONObject();
-			zeker.put("title", ZekrTitle);
-			zeker.put("value", zekrValue);
-			jsonPairs.put("zekerValue", zeker);
+			jsonPairs.put("accessToken", accessToken);
+			jsonPairs.put("counter", counter);
+			jsonPairs.put("contentId", contentId);
+			// url
+			String url = BASE_SERVICE_URL + "selfZeker/addSelfZeker";
+			// send request
+			String response = sendPostRequest(url, jsonPairs);
+			// parse response
+			if (response != null && !response.equals("")) {
+				JSONObject jsonResponse = new JSONObject(response);
+				String flag = jsonResponse.getString(FLAG);
+				result.setFlag(flag);								
+			} else {
+				result.setFlag(CONNECTION_ERROR_CODE);
+			}
+		} catch (Exception e) {
+			result.setFlag(RESPONCE_FORMAT_ERROR_CODE);
+		}	
+		return result;
+	}
+	
+	
+	/**
+	 * send Zecer to friend
+	 * @param sessionAccessToken
+	 * @param destMobileNumber friend's mobile number
+	 * @param contentId
+	 * @param goal
+	 * @return ServerResult 
+	 */
+	public ServerResult sendZekrToUsers(String accessToken,String destMobileNumber,int contentId,int goal){
+		ServerResult result = new ServerResult();
+		
+		try {
+			// parameters
+			
+			JSONObject jsonPairs = new JSONObject();
+			jsonPairs.put("accsessToken",accessToken);
+			jsonPairs.put("destMobileNumber",destMobileNumber);
+			jsonPairs.put("contentId",contentId);
+			jsonPairs.put("goal",goal);
+			
 			// url
 			String url = BASE_SERVICE_URL + "/events/sendZekerToUsers";
 			// send request
@@ -402,6 +440,7 @@ public class ServerAccess {
 		}
 		return result;
 	}
+	
 	public ServerResult getTodayHadith(String accessToken){
 		ServerResult result = new ServerResult();
 		int type = 1;
@@ -595,6 +634,7 @@ public class ServerAccess {
 			jsonPairs.put("counterValue", counterValue);
 									
 			// url
+			//TODO it should be BASE_SERVICE_URL + "tasks/updateTaskCounter";
 			String url = BASE_SERVICE_URL + "/tasks/updateZekerCounter";
 			// send request
 			String response = sendPostRequest(url, jsonPairs);

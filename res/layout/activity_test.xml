@@ -1,0 +1,44 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TestActivity" >
+
+    <Button
+        android:id="@+id/btn_openDialogZickerPicker_me"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_openDialogZickerPicker_Frineds"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="openDialogZickerPicker_me" />
+
+    <Button
+        android:id="@+id/btn_openDialogZickerPicker_Frined"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btn_openDialogZickerPicker_me"
+        android:layout_below="@+id/btn_openDialogZickerPicker_me"
+        android:layout_marginTop="58dp"
+        android:text="openDialogZickerPickerToFrineds" />
+		<!--TODO: addNames to @String file-->
+    <TextView
+        android:id="@+id/tvCountOfZicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_openDialogZickerPicker_Frined"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="21dp"
+        android:textSize="40sp" 
+        android:textIsSelectable="false"/>
+
+    <Button
+        android:id="@+id/btn_decZickerCountByOne"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="28dp"
+        android:text="--" />
+
+</RelativeLayout>

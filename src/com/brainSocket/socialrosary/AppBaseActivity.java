@@ -5,6 +5,7 @@ import android.support.v7.app.ActionBarActivity;
 
 public class AppBaseActivity extends ActionBarActivity {
 
+	//TODO this comment will delete later;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
