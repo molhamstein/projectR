@@ -36,9 +36,10 @@ public class DataStore {
 	private ArrayList<DataStoreUpdatListener> updateListeners ;
 	
 	private String apiAccessToken = null;
-	//private ArrayList<AppContact> arrayEnrolledFriends = null;
+	private ArrayList<AppContact> arrayEnrolledFriends = null;
 	private ArrayList<AppContact> contacts ;
 	private ArrayList<AppConversation> converastions ;
+	private ArrayList<AppContact> enrolledFriensds ;
 	
 	private HashMap<String, ArrayList<AppEvent>> mapSessionEvents ;
 /*	private ArrayList<String> whatsAppFriendsLocalIds = null ;
@@ -112,7 +113,7 @@ public class DataStore {
 			@Override
 			public void run() {
 				converastions = updateConversations() ;
-				
+				enrolledFriensds = updateEnrolledFriends() ;
 				broadcastDataStoreUpdate();
 			}
 		}).start();
@@ -401,11 +402,41 @@ public class DataStore {
 		return conversations ;
 	}
 	
+	private ArrayList<AppContact> updateEnrolledFriends(){
+		ArrayList<AppContact> enrolledFriends = null ;
+		try{
+			if(contacts!=null){
+				ServerResult result = serverHandler.getInstance().getEnrolledFriends(apiAccessToken, contacts);
+					if(!result.connectionFailed()){
+						enrolledFriends = (ArrayList<AppContact>) result.getValue("enrolledUsers") ; 
+					}
+			}
+		}catch(Exception e){e.printStackTrace();}
+		return enrolledFriends ;
+	}
+	
+	
 	// getteres
 	public ArrayList<AppConversation> getConverastions() {
 		return converastions;
 	}
 	
+	
+	public ArrayList<AppContact> getEnrolledFriensds() {
+		return enrolledFriensds;
+	}
+	
+	
+	/// utils 
+	public boolean isRnrolledFriend (String phoneNumber){
+		if(enrolledFriensds == null )
+			return false ;
+		for(AppContact con : enrolledFriensds){
+			if(con.getPhoneNum().equals(phoneNumber))
+				return true;
+		}
+		return false ;
+	}
 	
 	public interface DataRequestCallback {
 		public void onDataReady(ServerResult data, boolean success);

@@ -72,14 +72,30 @@
         <RelativeLayout
             android:id="@+id/RlSegment2"
             android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp" >
+
+            <com.brainSocket.socialrosary.views.EditTextCustomFont
+                android:id="@+id/etFilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bg_edittext"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/ts_text_big" />
 
             <ListView
                 android:id="@+id/lvContacts"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:dividerHeight="0dp" >
+                android:layout_below="@id/etFilter"
+                android:layout_marginTop="5dp"
+                android:dividerHeight="0dp"
+                tools:listitem="@layout/row_conversation" >
             </ListView>
         </RelativeLayout>
     </LinearLayout>

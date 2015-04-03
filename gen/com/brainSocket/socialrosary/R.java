@@ -1776,11 +1776,12 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_profile_picture_width=0x7f07002d;
         /**  conversatoin details 
          */
-        public static final int conversation_event_picture_size=0x7f070049;
+        public static final int conversation_event_picture_size=0x7f07004a;
         /**  CONVERSATIONS 
          */
-        public static final int conversations_list_height=0x7f070047;
-        public static final int conversations_list_name_margin=0x7f070048;
+        public static final int conversations_list_elem_height=0x7f070047;
+        public static final int conversations_list_name_margin=0x7f070049;
+        public static final int conversations_list_profile_pic_height=0x7f070048;
         public static final int corner_radius_big=0x7f070044;
         public static final int corner_radius_normal=0x7f070045;
         public static final int corner_radius_small=0x7f070046;
@@ -1820,19 +1821,19 @@ containing a value of this type.
         public static final int disabled_alpha_material_light=0x7f070000;
         /**  Flat Btn 
          */
-        public static final int fbutton_default_conner_radius=0x7f07004a;
-        public static final int fbutton_default_padding_bottom=0x7f07004e;
-        public static final int fbutton_default_padding_left=0x7f07004b;
-        public static final int fbutton_default_padding_right=0x7f07004c;
-        public static final int fbutton_default_padding_top=0x7f07004d;
-        public static final int fbutton_default_shadow_height=0x7f07004f;
+        public static final int fbutton_default_conner_radius=0x7f07004b;
+        public static final int fbutton_default_padding_bottom=0x7f07004f;
+        public static final int fbutton_default_padding_left=0x7f07004c;
+        public static final int fbutton_default_padding_right=0x7f07004d;
+        public static final int fbutton_default_padding_top=0x7f07004e;
+        public static final int fbutton_default_shadow_height=0x7f070050;
         public static final int login_form_input_margin=0x7f07003a;
         /**  LOGIN 
          */
         public static final int login_form_side_margin=0x7f070039;
         /**  drawer 
          */
-        public static final int textview_height=0x7f070050;
+        public static final int textview_height=0x7f070051;
         public static final int ts_text_big=0x7f07003e;
         public static final int ts_text_normal=0x7f07003d;
         public static final int ts_text_small=0x7f07003c;
@@ -2030,11 +2031,12 @@ containing a value of this type.
         public static final int dialog=0x7f090019;
         public static final int disableHome=0x7f09000d;
         public static final int dlDrawer=0x7f09004a;
-        public static final int drawable_icon=0x7f09009f;
+        public static final int drawable_icon=0x7f0900a1;
         public static final int drawer_layout=0x7f090044;
         public static final int dropdown=0x7f09001a;
         public static final int edit_query=0x7f090035;
         public static final int end=0x7f09001c;
+        public static final int etFilter=0x7f09008c;
         public static final int etName=0x7f090083;
         public static final int etPhoneNum=0x7f09007f;
         public static final int expand_activities_button=0x7f090024;
@@ -2046,12 +2048,13 @@ containing a value of this type.
         public static final int image=0x7f090025;
         public static final int ivBack=0x7f090075;
         public static final int ivBtnNext=0x7f090059;
+        public static final int ivDecoration=0x7f09009d;
         public static final int ivLogo=0x7f090077;
-        public static final int ivMe=0x7f090092;
+        public static final int ivMe=0x7f090093;
         public static final int ivMenu=0x7f090074;
         public static final int ivNetworkIcon=0x7f09009a;
-        public static final int ivPeer=0x7f090094;
-        public static final int ivPhoto=0x7f09009b;
+        public static final int ivPeer=0x7f090095;
+        public static final int ivPhoto=0x7f09009c;
         public static final int ivPlant=0x7f09008a;
         public static final int large=0x7f09001e;
         public static final int left_drawer=0x7f090046;
@@ -2064,19 +2067,19 @@ containing a value of this type.
         public static final int login_form=0x7f090049;
         public static final int login_status=0x7f090047;
         public static final int login_status_message=0x7f090048;
-        public static final int lvContacts=0x7f09008c;
+        public static final int lvContacts=0x7f09008d;
         public static final int lvDrawer=0x7f09007b;
         public static final int lvEvents=0x7f090041;
-        public static final int menu_settings=0x7f0900a1;
+        public static final int menu_settings=0x7f0900a3;
         public static final int middle=0x7f09001d;
-        public static final int name=0x7f09008d;
+        public static final int name=0x7f09008e;
         public static final int never=0x7f090017;
         public static final int none=0x7f09000f;
         public static final int normal=0x7f09000b;
         public static final int np1=0x7f090078;
         public static final int np3=0x7f09007a;
         public static final int pbSpinner=0x7f090043;
-        public static final int photo=0x7f0900a0;
+        public static final int photo=0x7f0900a2;
         public static final int picker_subtitle=0x7f090069;
         public static final int progress_circular=0x7f090007;
         public static final int progress_horizontal=0x7f090008;
@@ -2106,15 +2109,15 @@ containing a value of this type.
         public static final int tabMode=0x7f09000c;
         public static final int title=0x7f090029;
         public static final int tvCountOfZicker=0x7f090051;
-        public static final int tvDate=0x7f090099;
-        public static final int tvDesc=0x7f090098;
+        public static final int tvDate=0x7f09009b;
+        public static final int tvDesc=0x7f090099;
         public static final int tvFragTitle=0x7f090076;
         public static final int tvHadeeth=0x7f090089;
-        public static final int tvInfo=0x7f090090;
+        public static final int tvInfo=0x7f090091;
         public static final int tvLoadingMsg=0x7f09004d;
-        public static final int tvMe=0x7f090093;
-        public static final int tvName=0x7f090097;
-        public static final int tvPeer=0x7f090095;
+        public static final int tvMe=0x7f090094;
+        public static final int tvName=0x7f090098;
+        public static final int tvPeer=0x7f090096;
         public static final int tvSegment1=0x7f090086;
         public static final int tvSegment2=0x7f090087;
         public static final int tvTut1=0x7f090054;
@@ -2123,13 +2126,13 @@ containing a value of this type.
         public static final int tvWarning=0x7f090042;
         public static final int up=0x7f090001;
         public static final int useLogo=0x7f090013;
-        public static final int vImgContainer=0x7f090091;
-        public static final int vInfo=0x7f09009e;
-        public static final int vMe=0x7f09009c;
-        public static final int vPeer=0x7f09009d;
-        public static final int vPhotoContainer=0x7f090096;
-        public static final int viberIcon=0x7f09008f;
-        public static final int whatsappIcon=0x7f09008e;
+        public static final int vImgContainer=0x7f090092;
+        public static final int vInfo=0x7f0900a0;
+        public static final int vMe=0x7f09009e;
+        public static final int vPeer=0x7f09009f;
+        public static final int vPhotoContainer=0x7f090097;
+        public static final int viberIcon=0x7f090090;
+        public static final int whatsappIcon=0x7f09008f;
         public static final int withText=0x7f090018;
         public static final int wrap_content=0x7f090009;
     }

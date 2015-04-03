@@ -20,7 +20,8 @@
     <dimen name="corner_radius_small">3dp</dimen>
 
     <!-- CONVERSATIONS -->
-    <dimen name="conversations_list_height">75dp</dimen>
+    <dimen name="conversations_list_elem_height">90dp</dimen>
+    <dimen name="conversations_list_profile_pic_height">75dp</dimen>
     <dimen name="conversations_list_name_margin">65dp</dimen>
     
     

@@ -33,6 +33,7 @@ import android.content.Context;
 import android.view.accessibility.AccessibilityEventSource;
 
 import com.brainSocket.socialrosary.RosaryApp;
+import com.brainSocket.socialrosary.model.AppContact;
 import com.brainSocket.socialrosary.model.AppEvent;
 import com.brainSocket.socialrosary.model.AppSession;
 import com.brainSocket.socialrosary.model.AppUser;
@@ -278,6 +279,41 @@ public class ServerAccess {
 		return result;
 	}
 
+	public ServerResult getEnrolledFriends(String accessToken, ArrayList<AppContact> contatcs) {
+		ServerResult result = new ServerResult();
+		ArrayList<AppContact> enrolledFriends = null ;
+		try {
+			JSONArray jsonContacts = new JSONArray() ;
+			if(contatcs != null){
+				for (AppContact appContact : contatcs) {
+					JSONObject jsn = new JSONObject();
+					jsn.put("mobileNumber", appContact.getPhoneNum());
+					jsonContacts.put(jsn);
+				}
+			}
+			JSONObject jsonPairs = new JSONObject();
+			jsonPairs.put("accessToken", accessToken);
+			jsonPairs.put("contactsArray", jsonContacts);			
+			String url = BASE_SERVICE_URL + "/users/getEnrolledFriends";
+			String response = sendPostRequest(url, jsonPairs);
+			if (response != null && !response.equals("")) {
+				JSONObject jsonResponse = new JSONObject(response);
+				result.setFlag(jsonResponse.getString(FLAG));
+				if(jsonResponse.has("enrolledUsers")){
+					enrolledFriends = new ArrayList<AppContact>() ;
+					if(!jsonResponse.isNull("enrolledUsers")){
+						JSONArray jsonArray = jsonResponse.getJSONArray("enrolledUsers");
+						for (int i = 0; i < jsonArray.length(); i++) {
+							AppContact enrolledFriend = new AppContact(jsonArray.getJSONObject(i));
+							enrolledFriends.add(enrolledFriend) ;
+						}
+					}
+				}
+			} else {result.setFlag(CONNECTION_ERROR_CODE);}
+		} catch (Exception e) {result.setFlag(RESPONCE_FORMAT_ERROR_CODE);}
+		result.addPair("enrolledUsers", enrolledFriends);
+		return result;
+	}
 	
 
 /*	public HashMap<String, Object> getMe(String accessToken) {
