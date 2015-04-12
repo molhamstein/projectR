@@ -2,34 +2,51 @@ package com.brainSocket.socialrosary;
 
 import java.util.ArrayList;
 
+import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
-import android.os.StrictMode.VmPolicy;
+import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.brainSocket.socialrosary.ZicerSelectDialogForFriend.DialogZickerPickerSelectForFriend_Interface;
 import com.brainSocket.socialrosary.data.DataStore;
-import com.brainSocket.socialrosary.data.ServerResult;
 import com.brainSocket.socialrosary.data.DataStore.DataRequestCallback;
 import com.brainSocket.socialrosary.data.PhotoProvider;
-import com.brainSocket.socialrosary.data.DataStore.DataStoreUpdatListener;
+import com.brainSocket.socialrosary.data.ServerResult;
 import com.brainSocket.socialrosary.model.AppContact;
-import com.brainSocket.socialrosary.model.AppContact.SOCIAL_MEDIA_ACCOUNT_TYPE;
 import com.brainSocket.socialrosary.model.AppConversation;
+import com.brainSocket.socialrosary.model.AppConversation.CONVERSATION_TYPE;
 import com.brainSocket.socialrosary.model.AppEvent;
 import com.brainSocket.socialrosary.model.AppUser;
-import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMultiplayer.InitiateMatchResult;
+import com.brainSocket.socialrosary.views.TextViewCustomFont;
 
-public class ConversationActivity extends AppBaseActivity {
+public class ConversationActivity extends AppBaseActivity implements OnClickListener{
 
 	ListView lvEvents ;
 	ConversationEventsAdapter adapter ;
 	ArrayList<AppEvent> events ;
+	AppConversation conversation ;
+	ArrayList<AppContact> peers ;
+	CONVERSATION_TYPE conversationType ;
 	String sessionId ;
+	
+	View btnSendZiker ;  
+	
+	ImageView ivlogo ;
+	TextView tvTitle ;
+	
+	
+	
+	
+	//callback for conversation history activity
 	
 	DataRequestCallback eventsCallback = new DataRequestCallback() {
 		@Override
@@ -39,28 +56,98 @@ public class ConversationActivity extends AppBaseActivity {
 				adapter.updateData(events);
 			}else{
 				// TODO show error
+				Toast.makeText(getApplicationContext(), "·«Ì„ﬂ‰ «·≈ „«„ «·√‰ «·—Ã«¡ «·„Õ«Ê·… ·«Õﬁ«",
+						Toast.LENGTH_SHORT).show();
 			}
 		}
 	};
+		
+	//callback for send Zicker to user dialog
+	
+	DialogZickerPickerSelectForFriend_Interface SendZickercallBack=new DialogZickerPickerSelectForFriend_Interface() {
+		
+		@Override
+		public void dialogZickerSelectForFriendPositiveClick(DialogFragment dialog,
+				String selectedZicker, int NumberPickerValue) {
+				String destMobileNumber=peers.get(0).getPhoneNum();
+			int contentId=0;
+			DataStore.getInstance().sendZekrToUsers(destMobileNumber,contentId, NumberPickerValue, eventsCallback);
+			
+		}
+
+		@Override
+		public void dialogZickerSelectForFriendNegativeClick(DialogFragment dialog) {
+			// TODO Auto-generated method stub
+			Log.d("dialogZickerSelectForFriendNegativeClick", "Clicked");
+		}
+
+		@Override
+		public void dialogZickerSelectForFriensSendClick() {
+			// TODO  
+			Log.d("dialogZickerSelectForFriensSendClick", "Clicked");
+		}
+	};
+	
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat);
 		init();
+		initCustomActionBar() ;
 		try{
-			sessionId = getIntent().getExtras().getString("sessionId");
+			Bundle extras = getIntent().getExtras() ;
+			if(extras.containsKey("sessionId")){
+				sessionId = getIntent().getExtras().getString("sessionId");
+				conversation = DataStore.getInstance().getConversationBySessionId(sessionId);
+				peers = conversation.getSession().getPeers();
+				conversationType = conversation.getSession().getType() ;
+			}else{
+				sessionId = null ;
+				AppContact contact = (AppContact) extras.getParcelable("contact");
+				peers = new ArrayList<AppContact>() ;
+				peers.add(contact);
+				conversationType = CONVERSATION_TYPE.SINGLE ;
+				conversation = new AppConversation(contact);
+			}
+			
+			tvTitle.setText( conversation.getName() );
 		}catch(Exception e){}
 	}
 	
 	
 	private void init(){
 		lvEvents = (ListView) findViewById(R.id.lvEvents);
+		btnSendZiker = findViewById(R.id.btnSendZikr);
 		adapter = new ConversationEventsAdapter(new ArrayList<AppEvent>());
 		lvEvents.setAdapter(adapter);
 		
+		btnSendZiker.setOnClickListener(this);
 	}
 	
+	
+	private void initCustomActionBar() {
+		
+		ActionBar mActionBar = getSupportActionBar();
+		mActionBar.setDisplayShowHomeEnabled(false);
+		mActionBar.setDisplayShowTitleEnabled(false);
+		mActionBar.setDisplayUseLogoEnabled(false);
+		mActionBar.setDisplayHomeAsUpEnabled(false) ;
+		mActionBar.setHomeAsUpIndicator(null);
+		//LayoutInflater mInflater = LayoutInflater.from(this); 
+		mActionBar.setCustomView(R.layout.custom_actionbar);
+		mActionBar.setDisplayShowCustomEnabled(true);
+		View mCustomView = mActionBar.getCustomView() ;
+		mCustomView.invalidate();
+		
+		tvTitle = (TextViewCustomFont) mCustomView.findViewById(R.id.tvFragTitle) ;
+		ImageView	ivMenu = (ImageView) mCustomView.findViewById(R.id.ivMenu);
+		ivlogo = (ImageView) mCustomView.findViewById(R.id.ivLogo);
+		
+		ivlogo.setVisibility(View.VISIBLE);
+		ivMenu.setVisibility(View.GONE);
+		tvTitle.setVisibility(View.GONE);
+	}
 	
 	@Override
 	protected void onResume() {
@@ -68,7 +155,26 @@ public class ConversationActivity extends AppBaseActivity {
 		DataStore.getInstance().requestSessionEvents(sessionId,eventsCallback );
 	}
 	
+	private void sendZiker () {
+		if(peers != null){
+			ZicerSelectDialogForFriend dialog=new ZicerSelectDialogForFriend(SendZickercallBack);
+			dialog.show(getSupportFragmentManager(), "Dialog to send Zicker To User");
+		}
+	}
 	
+	@Override
+	public void onClick(View v) {
+		int id = v.getId();
+		switch (id) {
+		case R.id.btnSendZikr:
+			sendZiker();
+			break;
+
+		default:
+			break;
+		}
+		
+	}
 	
 	private class ConversationEventsAdapter extends BaseAdapter {
 
@@ -176,5 +282,9 @@ public class ConversationActivity extends AppBaseActivity {
 			TextView tvMe, tvPeer, tvInfo ;
 		}
 	}
+
+
+
+
 	
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,6 +7,7 @@
     android:orientation="vertical" >
 
     <LinearLayout
+        android:id="@+id/vSegmentView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -41,6 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_below="@id/vSegmentView"
         android:orientation="horizontal" >
 
         <RelativeLayout
@@ -84,7 +86,7 @@
                 android:layout_marginTop="5dp"
                 android:background="@drawable/bg_edittext"
                 android:gravity="center"
-                android:padding="5dp"
+                android:padding="2dp"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/ts_text_big" />
 
@@ -93,11 +95,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/etFilter"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
+                android:divider="@android:color/transparent"
                 android:dividerHeight="0dp"
                 tools:listitem="@layout/row_conversation" >
             </ListView>
         </RelativeLayout>
     </LinearLayout>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/btnStartSelfTask"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="right|bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/btn_self_task" />
+
+</RelativeLayout>

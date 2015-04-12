@@ -2,6 +2,7 @@ package com.brainSocket.socialrosary.helpers;
 
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -33,8 +34,10 @@ public class AnimationHelper {
 
 	
 	
-	public static void appliyPredefinedAmin (View view , int resAnim){
+	public static void appliyPredefinedAmin (View view , int resAnim, AnimationListener listener){
 		Animation anim = AnimationUtils.loadAnimation(RosaryApp.getAppContext(), resAnim);
+		if(listener != null)
+			anim.setAnimationListener(listener);
 		view.startAnimation(anim);
 	}
 	

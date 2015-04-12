@@ -2,26 +2,29 @@ package com.brainSocket.socialrosary.data;
 
 import java.util.Calendar;
 
+import org.json.JSONObject;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
+import com.brainSocket.socialrosary.ConversationActivity;
 import com.brainSocket.socialrosary.MainActivity;
 import com.brainSocket.socialrosary.R;
 import com.brainSocket.socialrosary.RosaryApp;
 import com.brainSocket.socialrosary.SplashScreen;
+import com.brainSocket.socialrosary.model.AppEvent;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class GCMHandler 
 {
-	private static final String GCM_SENDER_ID = "957094793251";
+	private static final String GCM_SENDER_ID = "608654228486";
 	private static final String GCM_REGISTRATION_ID = "registration_id" ;
 	public static final String PREF_GCM = "gcm";
 //	public static final String EXTRA_MESSAGE = "message";
@@ -33,7 +36,7 @@ public class GCMHandler
     public static final int NOTIFICATION_ID = 1213124287;
     private static NotificationManager mNotificationManager;
 //    Notification.Builder builder;
-    public static enum APP_STATE {FRIENDS, FRIENDS_BACKGROUND, CHAT, CHAT_BACKGROUND, HOME, HOME_BACKGROUND, GAME_DETAILS, GAME_DETAILS_BACKGROUND, ROUND, ROUND_BACKGROUND, NOT_LOGGED_IN, CLOSED};
+    public static enum APP_STATE {MAIN, MAIN_BG, CONVERSATION_DETAILS_BG, NOT_LOGGED_IN, CLOSED};
     public static APP_STATE appState = APP_STATE.CLOSED;
     public static OnPushNotificationListener notificationListener;
     
@@ -148,6 +151,8 @@ public class GCMHandler
 	 */
 	private static void registerInBackground(final Context context, final AppGcmListener listener) {
 	    new AsyncTask<Void, Void, Void>() {
+	    	int attemotsMade = 0 ;
+	    	int MAX_ATTEMPTS_ALLOWED = 5 ;
 	        @Override
 	        protected Void doInBackground(Void... params) {
 	            try {
@@ -168,6 +173,14 @@ public class GCMHandler
 	            catch (Exception ex) {
 	            	/*Configuration.displayToast("REGISTRATION ERROR " + ex != null? ex.toString(): "", Toast.LENGTH_SHORT);*/
 	            	ex.printStackTrace();
+	            	if(attemotsMade < MAX_ATTEMPTS_ALLOWED){
+	            		try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+	            		doInBackground(params);
+	            	}
 	            }
 	            return null;
 	        }
@@ -224,8 +237,15 @@ public class GCMHandler
 		try {
 			// setup message
 			String msg = null;
-			if(extras.containsKey("title")) {
-				msg = extras.getString("title");
+			AppEvent event = null ;
+			if(extras.containsKey("contentType")) {
+				String contentType= extras.getString("contentType");
+				if(contentType.equals("event")){
+					msg = extras.getString("content");
+					JSONObject jsonObj = new JSONObject(msg);
+					event = new AppEvent(jsonObj);
+				}
+				
 			}
 			else {
 				msg = context.getString(R.string.app_name);
@@ -249,52 +269,31 @@ public class GCMHandler
 			// setup flag
 			intent.putExtra("isPush", true);
 			
-/*			switch (appState) {
-			case CHAT:
-			case FRIENDS:
-			case GAME_DETAILS:
-			case HOME:
-			case ROUND:
-				Configuration.displayToast("Push: " + msg, Toast.LENGTH_LONG);
-				break;
-			case FRIENDS_BACKGROUND:
-				intent = new Intent(context, FriendsListingActivity.class);
-				intent.setClass(context, FriendsListingActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-				displayPushNotification(context, msg, intent);
-				break;
-			case CHAT_BACKGROUND:
-				intent = new Intent(context, ChatActivity.class);
-				intent.setClass(context, ChatActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-				displayPushNotification(context, msg, intent);
-				break;
-			case GAME_DETAILS_BACKGROUND:
-				intent = new Intent(context, GameDetailsActivity.class);
-				intent.setClass(context, GameDetailsActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-				displayPushNotification(context, msg, intent);
-				break;
-			case HOME_BACKGROUND:
+			switch (appState) {
+			
+			case MAIN_BG:
 				intent = new Intent(context, MainActivity.class);
 				intent.setClass(context, MainActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 				displayPushNotification(context, msg, intent);
 				break;
-			case ROUND_BACKGROUND:
-				intent = new Intent(context, RoundActivity.class);
-				intent.setClass(context, RoundActivity.class);
+			case CONVERSATION_DETAILS_BG:
+				intent = new Intent(context, ConversationActivity.class);
+				intent.setClass(context, ConversationActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 				displayPushNotification(context, msg, intent);
 				break;
 			case NOT_LOGGED_IN:
 				return;
 			case CLOSED:
+				
+				
+				
 				intent.setClass(context, SplashScreen.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				displayPushNotification(context, msg, intent);
 				break;
-			}*/
+			}
 		}
 		catch (Exception e) {}
 	}

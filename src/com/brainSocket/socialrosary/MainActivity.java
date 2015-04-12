@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +28,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.brainSocket.socialrosary.ZicerSelectDialogForMe.DialogZickerPickerSelectForMe_Interface;
+import com.brainSocket.socialrosary.data.DataStore;
+import com.brainSocket.socialrosary.data.DataStore.DataRequestCallback;
+import com.brainSocket.socialrosary.data.ServerResult;
 import com.brainSocket.socialrosary.fragments.FragMain;
+import com.brainSocket.socialrosary.model.AppContact;
+import com.brainSocket.socialrosary.model.AppConversation;
 import com.brainSocket.socialrosary.views.TextViewCustomFont;
 
 public class MainActivity extends AppBaseActivity implements OnClickListener, HomeCallbacks, OnBackStackChangedListener{
@@ -55,6 +62,10 @@ public class MainActivity extends AppBaseActivity implements OnClickListener, Ho
  	
  	/// Temp dataHolders 	
 
+ 	
+	
+ 	
+ 	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +87,7 @@ public class MainActivity extends AppBaseActivity implements OnClickListener, Ho
 		dlDrawer = (DrawerLayout) findViewById(R.id.dlDrawer);
 		llLoading = (LinearLayout) findViewById(R.id.llLoading);
 		tvLoadingMsg = (TextViewCustomFont) findViewById(R.id.tvLoadingMsg);
-			
+	
 		showProgress(false, R.string.loading_loading);
 
 		//getActionBar().setBackgroundDrawable(new ColorDrawable(R.color.orange_app_theme));
@@ -173,6 +184,7 @@ public class MainActivity extends AppBaseActivity implements OnClickListener, Ho
 		}
 	}
 	
+	
 	private  void backToHome(){
 		try { 
 			//switchSection(FRAG_TYPE.PICK_TRACK);
@@ -206,7 +218,6 @@ public class MainActivity extends AppBaseActivity implements OnClickListener, Ho
 		case R.id.ivMenu:
 			toggleDrawer();
 			break;
-
 		}
 	}
 	
@@ -370,12 +381,28 @@ public class MainActivity extends AppBaseActivity implements OnClickListener, Ho
 
 
 	@Override
-	public void showConversation(String conversationId) {
-		if(conversationId == null)
+	public void showConversation(AppConversation conversation) {
+		if(conversation == null)
 			return ;
 		Intent i = new Intent(this, ConversationActivity.class);
-		i.putExtra("sessionId", conversationId);
+		if(conversation.isHasSession()){
+			i.putExtra("sessionId", conversation.getSession().getIdGlobal());
+		}else{
+			i.putExtra("contact", conversation.getContacts().get(0));
+		}
 		startActivity(i);
+		
+	}
+
+
+	@Override
+	public void sendSocialMediaZeker(AppContact contact) {
+		String shareBody = "Dua dua dua ";
+	    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+	        sharingIntent.setType("text/plain");
+	        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "—”·  ⁄‰ ÿ—Ìﬁ  ÿ»Ìﬁ ”»⁄Ì‰");
+	        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+	        startActivity(Intent.createChooser(sharingIntent,"«Œ —⁄‰ ÿ—Ìﬁ «Ì »—‰«„Ã  —Ìœ «—”«· œ⁄Ê… «·–ﬂ—"));
 	}
 	
 

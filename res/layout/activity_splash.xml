@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/app_theme1">
 
     <!--
          <LinearLayout
@@ -31,13 +32,22 @@
     </LinearLayout>
     -->
 
-    <TextView
-        android:layout_width="match_parent" 
-        android:layout_height="wrap_content"
-        android:text="Splash Screen"
+    <ImageView
+        android:id="@+id/vSpinner"
+        android:layout_width="100dp" 
+        android:layout_height="100dp"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:textSize="@dimen/ts_title_xbig"
-        />
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_spinner"/>
+    
+    <ImageView
+        android:layout_width="100dp" 
+        android:layout_height="33dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:scaleType="fitCenter"
+        android:layout_below="@id/vSpinner"
+        android:src="@drawable/dr_shadow_spot"/>
 
 </RelativeLayout>

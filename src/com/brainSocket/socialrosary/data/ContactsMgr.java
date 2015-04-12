@@ -89,40 +89,41 @@ public class ContactsMgr {
 	}
 	
 	private List<String> extractViberContacts(){
-
-		String[] columnsToExtract = new String[]{ContactsContract.Data.RAW_CONTACT_ID};
-		ContentResolver mResolver = RosaryApp.getAppContext().getContentResolver();		
-		Cursor c = mResolver.query(
-		        ContactsContract.Data.CONTENT_URI,
-		        columnsToExtract,
-		        ContactsContract.Data.MIMETYPE + "=?",
-		        new String[]{"vnd.android.cursor.item/vnd.com.viber.voip.viber_out_call_viber"},
-		        null);
-		List<String> viberRawContactIds = new ArrayList<String>();
-		if(c.moveToFirst()) {
-			while(!c.isAfterLast()) {
-				viberRawContactIds.add(c.getString(c.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID)));
-				c.moveToNext();
-			}
-		}
-		c.close();
-		columnsToExtract = new String[]{ContactsContract.RawContacts.CONTACT_ID};
-		String selection = ContactsContract.Data._ID + " IN (" + makePlaceholders(viberRawContactIds.size()) + ")";
-		String[] selectionArgs = viberRawContactIds.toArray(new String[viberRawContactIds.size()]);	
-		Cursor c2 = mResolver.query(
-				ContactsContract.RawContacts.CONTENT_URI,
-				columnsToExtract,
-				selection,
-				selectionArgs,
-				null);
 		List<String> viberContactIds = new ArrayList<String>();
-		if(c2.moveToFirst()){
-			while(!c2.isAfterLast()) {
-				viberContactIds.add(c2.getString(c2.getColumnIndex(ContactsContract.RawContacts.CONTACT_ID)));
-				c2.moveToNext();
+		try{
+			String[] columnsToExtract = new String[]{ContactsContract.Data.RAW_CONTACT_ID};
+			ContentResolver mResolver = RosaryApp.getAppContext().getContentResolver();		
+			Cursor c = mResolver.query(
+			        ContactsContract.Data.CONTENT_URI,
+			        columnsToExtract,
+			        ContactsContract.Data.MIMETYPE + "=?",
+			        new String[]{"vnd.android.cursor.item/vnd.com.viber.voip.viber_out_call_viber"},
+			        null);
+			List<String> viberRawContactIds = new ArrayList<String>();
+			if(c.moveToFirst()) {
+				while(!c.isAfterLast()) {
+					viberRawContactIds.add(c.getString(c.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID)));
+					c.moveToNext();
+				}
 			}
-		}
-		c2.close();
+			c.close();
+			columnsToExtract = new String[]{ContactsContract.RawContacts.CONTACT_ID};
+			String selection = ContactsContract.Data._ID + " IN (" + makePlaceholders(viberRawContactIds.size()) + ")";
+			String[] selectionArgs = viberRawContactIds.toArray(new String[viberRawContactIds.size()]);	
+			Cursor c2 = mResolver.query(
+					ContactsContract.RawContacts.CONTENT_URI,
+					columnsToExtract,
+					selection,
+					selectionArgs,
+					null);
+			if(c2.moveToFirst()){
+				while(!c2.isAfterLast()) {
+					viberContactIds.add(c2.getString(c2.getColumnIndex(ContactsContract.RawContacts.CONTACT_ID)));
+					c2.moveToNext();
+				}
+			}
+			c2.close();
+		}catch(Exception e){}
 		return viberContactIds;
 	}
 

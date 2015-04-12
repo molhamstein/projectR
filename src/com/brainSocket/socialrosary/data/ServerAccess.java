@@ -286,9 +286,11 @@ public class ServerAccess {
 			JSONArray jsonContacts = new JSONArray() ;
 			if(contatcs != null){
 				for (AppContact appContact : contatcs) {
-					JSONObject jsn = new JSONObject();
-					jsn.put("mobileNumber", appContact.getPhoneNum());
-					jsonContacts.put(jsn);
+					if(appContact.getPhoneNum() != null && !appContact.getPhoneNum().isEmpty()){
+						JSONObject jsn = new JSONObject();
+						jsn.put("mobileNumber", appContact.getPhoneNum());
+						jsonContacts.put(jsn);
+					}
 				}
 			}
 			JSONObject jsonPairs = new JSONObject();
@@ -388,6 +390,7 @@ public class ServerAccess {
 	}
 
 	public ServerResult addSelfZeker(String accessToken,int counter,int contentId){
+		
 		ServerResult result = new ServerResult();
 		try {
 			// parameters
@@ -396,7 +399,7 @@ public class ServerAccess {
 			jsonPairs.put("counter", counter);
 			jsonPairs.put("contentId", contentId);
 			// url
-			String url = BASE_SERVICE_URL + "selfZeker/addSelfZeker";
+			String url = BASE_SERVICE_URL + "/selfZeker/addSelfZeker";
 			// send request
 			String response = sendPostRequest(url, jsonPairs);
 			// parse response
@@ -414,6 +417,8 @@ public class ServerAccess {
 	}
 	
 	
+	
+	
 	/**
 	 * send Zecer to friend
 	 * @param sessionAccessToken
@@ -424,7 +429,7 @@ public class ServerAccess {
 	 */
 	public ServerResult sendZekrToUsers(String accessToken,String destMobileNumber,int contentId,int goal){
 		ServerResult result = new ServerResult();
-		
+		System.out.println("ServerAccess.sendZekrToUsers()");
 		try {
 			// parameters
 			
@@ -442,7 +447,7 @@ public class ServerAccess {
 			if (response != null && !response.equals("")) {
 				JSONObject jsonResponse = new JSONObject(response);
 				String flag = jsonResponse.getString(FLAG);
-				result.setFlag(flag);								
+				result.setFlag(flag);
 			} else {
 				result.setFlag(CONNECTION_ERROR_CODE);
 			}
@@ -451,6 +456,8 @@ public class ServerAccess {
 		}	
 		return result;
 	}
+	
+	
 	public ServerResult ResponseToZekr(String userId, String eventId, String hasAgree){
 		ServerResult result = new ServerResult();
 		try {

@@ -3,9 +3,7 @@ package com.brainSocket.socialrosary.data;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import android.content.res.Configuration;
 import android.os.Handler;
-import android.widget.Toast;
 
 import com.brainSocket.socialrosary.RosaryApp;
 import com.brainSocket.socialrosary.data.GCMHandler.AppGcmListener;
@@ -16,7 +14,7 @@ import com.brainSocket.socialrosary.model.AppEvent;
 import com.brainSocket.socialrosary.model.AppSession;
 import com.brainSocket.socialrosary.model.AppUser;
 import com.brainSocket.socialrosary.model.AppUser.GENDER;
-import com.google.android.gms.internal.nu;
+import com.brainSocket.socialrosary.model.AppZiker;
 
 /**
  * This class will be responsible for requesting new data from the data providers
@@ -46,6 +44,14 @@ public class DataStore {
 	private ArrayList<String> viberFriendsLocalIds = null ;
 */	private AppUser me = null;
 	public static String meId = "";
+	
+	
+	 AppZiker[] arrayOfZicker={
+				new AppZiker("allh", 1),
+				new AppZiker("sb7anAllah", 2),
+				new AppZiker("laellah..", 3),
+				new AppZiker("ashhd..", 4)
+					};
 	
 	private DataStore() { 
 		try {
@@ -112,8 +118,9 @@ public class DataStore {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				converastions = updateConversations() ;
+				contacts = ContactsMgr.getInstance().getLocalContacts(RosaryApp.getAppContext());
 				enrolledFriensds = updateEnrolledFriends() ;
+				converastions = updateConversations() ;
 				broadcastDataStoreUpdate();
 			}
 		}).start();
@@ -143,22 +150,7 @@ public class DataStore {
 	public ArrayList<AppContact> getContacts() {
 		return contacts;
 	}
-	public void setContacts(ArrayList<AppContact> contacts) {
-		this.contacts = contacts;
-	}
 	
-	public void triggerContactsUpdate () {
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				contacts = ContactsMgr.getInstance().getLocalContacts(RosaryApp.getAppContext());
-				
-				broadcastDataStoreUpdate();
-			}
-		}).start(); 
-
-	}
 	
 	
 	/**
@@ -294,6 +286,51 @@ public class DataStore {
 		}).start();	
 	}
 	
+	/**
+	 * send Zecer to friend
+	 * @param sessionAccessToken
+	 * @param destMobileNumber friend's mobile number
+	 * @param contentId
+	 * @param goal
+	 * @return ServerResult 
+	 */
+	public void sendZekrToUsers(final String destMobileNumber,final int contentId,final int goal,
+								final DataRequestCallback callback){
+		//System.out.println("DataStore.sendZekrToUsers()");
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				boolean success = true ;
+				ServerResult result = serverHandler.sendZekrToUsers(apiAccessToken, destMobileNumber, contentId, goal);
+				if(result.connectionFailed())
+					success = false ;
+				else
+					invokeCallback(callback, success, result); // invoking the callback				
+			}
+		}).start();
+	}
+	
+	public void addSelfZeker(final int counter, final int contentId,
+			final DataRequestCallback callback) {
+		System.out.println("Datastore.addSelfZeker() is called!!");
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				String APIAccessToken = getApiAccessToken();
+				boolean success = true;
+				ServerResult result = serverHandler.addSelfZeker(APIAccessToken, counter, contentId);
+				System.out.println("result  " + "result.getFlag(): " + result.getFlag() + "result.connectionFailed(): "+ result.connectionFailed());
+				if (result.connectionFailed())
+					success = false;
+				else
+					invokeCallback(callback, success, result);
+			}
+		}).start();
+	}
+	
+	
+	
 	public void requestSessionEvents(final String SessionId, final DataRequestCallback callback) {
 		new Thread( new Runnable() { 
 			@Override
@@ -315,13 +352,6 @@ public class DataStore {
 		}).start();	
 	}
 	
-	public ArrayList<AppEvent> getSessionEvents(String sessionId) {
-		if(mapSessionEvents == null)
-			mapSessionEvents = new HashMap<String, ArrayList<AppEvent>>() ;
-		if(sessionId!= null && mapSessionEvents.containsKey(sessionId))
-			return mapSessionEvents.get(sessionId);
-		return null;
-	}
 	
 	// GCM
 	
@@ -368,8 +398,9 @@ public class DataStore {
 		ArrayList<AppSession> sessions = null;
 		try{
 			conversations = null ;
-			sessions = null; 
-			ArrayList<AppContact> contacts = ContactsMgr.getInstance().getLocalContacts(RosaryApp.getAppContext());
+			sessions = null;
+			if(contacts == null)
+				contacts = ContactsMgr.getInstance().getLocalContacts(RosaryApp.getAppContext());
 			
 			ServerResult result = serverHandler.getSessionsByDate(apiAccessToken, 0);
 			HashMap<String, Object> pairs = result.getPairs() ;
@@ -378,6 +409,8 @@ public class DataStore {
 			}else{
 				sessions = (ArrayList<AppSession>) result.getPairs().get("sessions") ;
 			}
+			if(sessions == null )
+				sessions = new ArrayList<AppSession>() ;
 			
 			conversations = new ArrayList<AppConversation>() ;
 			ArrayList<String> usersWithSessionsId = new ArrayList<String>() ;
@@ -402,6 +435,7 @@ public class DataStore {
 		return conversations ;
 	}
 	
+
 	private ArrayList<AppContact> updateEnrolledFriends(){
 		ArrayList<AppContact> enrolledFriends = null ;
 		try{
@@ -426,6 +460,31 @@ public class DataStore {
 		return enrolledFriensds;
 	}
 	
+	public AppConversation getConversationBySessionId (String sessionId){
+		for (AppConversation appConv : converastions) {
+			if(appConv.isHasSession() && appConv.getSession().getIdGlobal().equals(sessionId)){
+				return appConv ;
+			}
+		}
+		return null ;
+	}
+	
+	public CharSequence[] getZickers(){
+		
+		CharSequence[] ZickerAsArray=new CharSequence[arrayOfZicker.length];
+		for (int i = 0; i < ZickerAsArray.length; i++) 
+			ZickerAsArray[i]=arrayOfZicker[i].toString();
+		
+		return ZickerAsArray;
+	}
+	
+	public ArrayList<AppEvent> getSessionEvents(String sessionId) {
+		if(mapSessionEvents == null)
+			mapSessionEvents = new HashMap<String, ArrayList<AppEvent>>() ;
+		if(sessionId!= null && mapSessionEvents.containsKey(sessionId))
+			return mapSessionEvents.get(sessionId);
+		return null;
+	}
 	
 	/// utils 
 	public boolean isRnrolledFriend (String phoneNumber){

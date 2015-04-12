@@ -78,7 +78,9 @@ public class AppConversation {
 	public boolean isHasSession() {
 		return hasSession;
 	}
-	
+	public ArrayList<AppContact> getContacts() {
+		return contacts;
+	}
 	
 /*	public AppConversation(JSONObject json)
 	{

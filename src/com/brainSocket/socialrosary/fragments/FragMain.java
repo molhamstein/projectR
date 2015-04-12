@@ -4,27 +4,36 @@ package com.brainSocket.socialrosary.fragments;
 import java.util.ArrayList;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brainSocket.socialrosary.AppBaseActivity;
 import com.brainSocket.socialrosary.HomeCallbacks;
 import com.brainSocket.socialrosary.R;
+import com.brainSocket.socialrosary.ZicerSelectDialogForMe;
+import com.brainSocket.socialrosary.ZicerSelectDialogForMe.DialogZickerPickerSelectForMe_Interface;
 import com.brainSocket.socialrosary.data.DataStore;
 import com.brainSocket.socialrosary.data.DataStore.DataRequestCallback;
 import com.brainSocket.socialrosary.data.DataStore.DataStoreUpdatListener;
 import com.brainSocket.socialrosary.data.ServerResult;
+import com.brainSocket.socialrosary.helpers.AnimationHelper;
 import com.brainSocket.socialrosary.model.AppContact.SOCIAL_MEDIA_ACCOUNT_TYPE;
 import com.brainSocket.socialrosary.model.AppConversation;
+import com.google.android.gms.internal.ay;
 
 public class FragMain extends Fragment implements OnClickListener{
 
@@ -41,6 +50,40 @@ public class FragMain extends Fragment implements OnClickListener{
 	
 	ConversationsAdapter adapter ;
 	ArrayList<AppConversation> converastions ;
+	View btnStartSelfTask ;
+	
+	
+	DialogZickerPickerSelectForMe_Interface callBack=new DialogZickerPickerSelectForMe_Interface() {
+		
+ 		@Override
+		public void dialogZickerSelectForMePositiveClick(DialogFragment dialog, String zickerselected, int NumberPickerValue) {
+ 			DataStore.getInstance().addSelfZeker(NumberPickerValue, 1, apiAddZickerToMySelfCallback);
+		}
+		
+		@Override
+		public void dialogZickerSelectForMeNegativeClick(DialogFragment dialog) {
+			Toast.makeText(getActivity(), "OperationCansled!!", Toast.LENGTH_SHORT).show();	
+		}
+	};
+ 	 	
+	//callback for mainActivity
+	DataRequestCallback apiAddZickerToMySelfCallback = new DataRequestCallback() {
+				@Override
+		public void onDataReady(ServerResult result, boolean success) {
+			try {
+				if(success){
+					//TODO toast user that zicker added and refrash UI Log.d(TAG, "zickerMyselfAdded");			
+				}else{
+					Toast.makeText(getActivity(), getString(R.string.error_connection_failed), Toast.LENGTH_SHORT).show();
+				}
+			}
+			catch(Exception c)
+			{	
+				Toast.makeText(getActivity(), getString(R.string.error_signingin), Toast.LENGTH_SHORT).show();
+			}
+		}
+	};
+	
 	
 	DataStoreUpdatListener dataUpdateListener = new DataStoreUpdatListener() {
 		@Override
@@ -83,7 +126,9 @@ public class FragMain extends Fragment implements OnClickListener{
 		tvSeg2 = (TextView) getView().findViewById(R.id.tvSegment2);
 		lvConversations = (ListView) getView().findViewById(R.id.lvContacts);
 		tvHadeeth = (TextView) getView().findViewById(R.id.tvHadeeth);
+		btnStartSelfTask = getView().findViewById(R.id.btnStartSelfTask);
 		
+		btnStartSelfTask.setOnClickListener(this);
 		tvSeg1.setOnClickListener(this);
 		tvSeg2.setOnClickListener(this);
 		
@@ -117,6 +162,52 @@ public class FragMain extends Fragment implements OnClickListener{
 		return homeCallback;
 	}
 	
+	private void updateUI(SEGMENT_TYPE newSegType){
+		switch (newSegType) {
+		case MAIN:
+			AnimationListener enlargeBtnListner = new AnimationListener() {
+				@Override
+				public void onAnimationStart(Animation animation) {					
+				}
+				@Override
+				public void onAnimationRepeat(Animation animation) {					
+				}
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					try {
+						RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btnStartSelfTask.getLayoutParams() ;
+						params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+						params.addRule(RelativeLayout.ALIGN_PARENT_LEFT,0);
+						btnStartSelfTask.setLayoutParams(params);
+					} catch (Exception e) {}
+				}
+			};
+			AnimationHelper.appliyPredefinedAmin(btnStartSelfTask, R.anim.enlarge_to_right,enlargeBtnListner );
+			
+			break;
+		case CONVERSATIONS:
+			AnimationListener shrinkBtnListner = new AnimationListener() {
+				@Override
+				public void onAnimationStart(Animation animation) {					
+				}
+				@Override
+				public void onAnimationRepeat(Animation animation) {					
+				}
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					try {
+						RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btnStartSelfTask.getLayoutParams() ;
+						params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+						params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+						btnStartSelfTask.setLayoutParams(params);
+					} catch (Exception e) {}
+				}
+			};
+			AnimationHelper.appliyPredefinedAmin(btnStartSelfTask, R.anim.shrink_to_left, shrinkBtnListner);
+			break;
+		}
+	}
+	
 	private void switchSegment(SEGMENT_TYPE newSegment){
 		if(currentSegment == newSegment)
 			return;
@@ -125,10 +216,12 @@ public class FragMain extends Fragment implements OnClickListener{
 		case MAIN:
 			rlSegment1.setVisibility(View.VISIBLE);
 			rlSegment2.setVisibility(View.GONE);
+			updateUI(SEGMENT_TYPE.MAIN);
 			break;
 		case CONVERSATIONS:
 			rlSegment1.setVisibility(View.GONE);
 			rlSegment2.setVisibility(View.VISIBLE);
+			updateUI(SEGMENT_TYPE.CONVERSATIONS);
 			//Intent i = new Intent(getActivity(),ContactsList.class);
 			//startActivity(i);;
 			break;
@@ -136,6 +229,12 @@ public class FragMain extends Fragment implements OnClickListener{
 		currentSegment = newSegment ;
 		
 	}
+	
+	private void startSelfTask (){
+		ZicerSelectDialogForMe dialog=new ZicerSelectDialogForMe(callBack);
+		dialog.show(getActivity().getSupportFragmentManager(), "");
+	}
+
 	
 	@Override
 	public void onClick(View v) {
@@ -147,6 +246,9 @@ public class FragMain extends Fragment implements OnClickListener{
 		case R.id.tvSegment2:
 			switchSegment(SEGMENT_TYPE.CONVERSATIONS);
 			break;
+		case R.id.btnStartSelfTask:
+			startSelfTask() ;
+			break ;
 		}
 	}
 	
@@ -217,9 +319,10 @@ public class FragMain extends Fragment implements OnClickListener{
 	     		SOCIAL_MEDIA_ACCOUNT_TYPE contactType = conversation.getNetwork() ; 
 	     		if(contactType == SOCIAL_MEDIA_ACCOUNT_TYPE.WHATSAP ){
 	     			holder.ivNetworkIcon.setVisibility(View.VISIBLE);
-	     		}else if(contactType == SOCIAL_MEDIA_ACCOUNT_TYPE.VIBER ){
+	     		}else if(contactType == SOCIAL_MEDIA_ACCOUNT_TYPE.SAB3EEN ){
 	     			holder.ivPhoto.setVisibility(View.VISIBLE);
-	     			
+	     		}else{
+	     			holder.ivPhoto.setVisibility(View.GONE);
 	     		}
 			} catch (Exception e) {}
 
@@ -236,9 +339,11 @@ public class FragMain extends Fragment implements OnClickListener{
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			AppConversation conv = converastions.get(position);
-			if(conv.isHasSession()){
-				getHomeCallback().showConversation(conv.getSession().getIdGlobal());
-			}
+			if(conv.getNetwork() == SOCIAL_MEDIA_ACCOUNT_TYPE.SAB3EEN){
+				getHomeCallback().showConversation(conv);
+			}else{
+				getHomeCallback().sendSocialMediaZeker(null);
+			}			
 		}
 
 

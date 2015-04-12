@@ -27,6 +27,14 @@ public class RosaryApp extends Application {
 	public static Context getAppContext() {
 		return AppContext;
 	}
+	
+	/**
+	 * used by the GCM receiver to change context on receive if not set
+	 * @param appContext
+	 */
+	public static void setAppContext(Context appContext) {
+		AppContext = appContext;
+	}
 	public static void setCurrentAcivity(Activity currentAcivity) {
 		RosaryApp.currentAcivity = currentAcivity;
 		PromptManager.getInstanse().setContext(currentAcivity);

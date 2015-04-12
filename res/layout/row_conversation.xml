@@ -13,7 +13,7 @@
         android:layout_marginRight="20dp"
         android:background="@drawable/bg_list"
         android:clipChildren="false"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="26dp"
         android:paddingBottom="10dp"
         android:paddingTop="5dp" >
 
@@ -58,13 +58,13 @@
 
         <ImageView
             android:id="@+id/ivNetworkIcon"
-            android:layout_width="30dp"
+            android:layout_width="40dp"
             android:layout_height="30dp"
             android:layout_below="@id/tvDate"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="25dp"
             android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/ic_app_indicator" />
     </RelativeLayout>
 
     <FrameLayout
@@ -92,7 +92,7 @@
     
     <ImageView
         android:id="@+id/ivDecoration"
-        android:layout_width="50dp"
+        android:layout_width="35dp"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:src="@drawable/dr_list_decoration"
