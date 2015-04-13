@@ -667,6 +667,7 @@ public class ServerAccess {
 	
 		return result;
 	}
+	
 	public ServerResult updateZekrConter(String userId, String taskId, String counterValue){
 		ServerResult result = new ServerResult();
 		try {

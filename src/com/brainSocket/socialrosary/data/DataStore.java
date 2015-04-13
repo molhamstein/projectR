@@ -50,8 +50,19 @@ public class DataStore {
 				new AppZiker("allh", 1),
 				new AppZiker("sb7anAllah", 2),
 				new AppZiker("laellah..", 3),
-				new AppZiker("ashhd..", 4)
-					};
+				new AppZiker("ashhd..", 4),
+				new AppZiker("allh", 1),
+				new AppZiker("sb7anAllah", 2),
+				new AppZiker("laellah..", 3),
+				new AppZiker("ashhd..", 4),
+				new AppZiker("allh", 1),
+				new AppZiker("sb7anAllah", 2),
+				new AppZiker("laellah..", 3),
+				new AppZiker("ashhd..", 4),
+				new AppZiker("allh", 1),
+				new AppZiker("sb7anAllah", 2),
+				new AppZiker("laellah..", 3),
+				new AppZiker("ashhd..", 4)};
 	
 	private DataStore() { 
 		try {
@@ -320,7 +331,8 @@ public class DataStore {
 				String APIAccessToken = getApiAccessToken();
 				boolean success = true;
 				ServerResult result = serverHandler.addSelfZeker(APIAccessToken, counter, contentId);
-				System.out.println("result  " + "result.getFlag(): " + result.getFlag() + "result.connectionFailed(): "+ result.connectionFailed());
+								System.out.println("result  " + "result.getFlag(): " +result.getFlag() + 
+													"result.connectionFailed(): "+ result.connectionFailed());
 				if (result.connectionFailed())
 					success = false;
 				else

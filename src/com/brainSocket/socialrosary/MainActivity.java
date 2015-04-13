@@ -28,7 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.brainSocket.socialrosary.ZicerSelectDialogForMe.DialogZickerPickerSelectForMe_Interface;
+import com.brainSocket.socialrosary.ZicerSelectDialogForMe.selfZickerListener;
 import com.brainSocket.socialrosary.data.DataStore;
 import com.brainSocket.socialrosary.data.DataStore.DataRequestCallback;
 import com.brainSocket.socialrosary.data.ServerResult;

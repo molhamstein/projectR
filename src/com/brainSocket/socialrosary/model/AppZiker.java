@@ -1,12 +1,5 @@
 package com.brainSocket.socialrosary.model;
 
-import org.json.JSONObject;
-
-import android.database.Cursor;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.Contacts;
 
 public class AppZiker  {		
 
@@ -14,7 +7,7 @@ public class AppZiker  {
 	String content;
 	
 	public  AppZiker(String content,int j){
-		content=content;
+		this.content=content;
 		i=j;
 	}
 	public int getCount(){return i;}
