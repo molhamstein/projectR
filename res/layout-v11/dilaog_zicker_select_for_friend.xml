@@ -5,46 +5,24 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
- 
-
  	 <ListView
-        android:id="@+id/lvsended_zickerList"
+        android:id="@+id/lvSendedZickerList"
         android:layout_width="match_parent"
         android:layout_height="250dp"
 		android:layout_marginBottom="50dp"
-		android:choiceMode="singleChoice"
         android:dividerHeight="4dp"
+        android:choiceMode="singleChoice"
         android:background="?android:attr/activatedBackgroundIndicator"
         tools:listitem="@layout/row_dilaog_zicker_list" >
-  	</ListView>
-  	     <!-- 
-        
-         -->
-        
-  	
-    
-    
-    
-    <Button
-        android:id="@+id/btn_inc_sended_count"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="++" />
-
-   	<TextView
-        android:id="@+id/tvcount_of_sended_count"
+  	</ListView>  
+   
+ 	 <NumberPicker
+        android:id="@+id/np1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="" />     
-        
-   	<Button
-        android:id="@+id/btn_dec_sended_zicker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="--" />
-        
-  	
-  	<Button
+        android:layout_marginTop="14dp" />
+
+    <Button
         android:id="@+id/btn_sendZickerToFriend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,7 +33,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="SendToFriend.." />
-
-
 	
 </LinearLayout>

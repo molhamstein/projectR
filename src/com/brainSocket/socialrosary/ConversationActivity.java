@@ -67,25 +67,25 @@ public class ConversationActivity extends AppBaseActivity implements OnClickList
 	DialogZickerPickerSelectForFriend_Interface SendZickercallBack=new DialogZickerPickerSelectForFriend_Interface() {
 		
 		@Override
-		public void dialogZickerSelectForFriendPositiveClick(DialogFragment dialog,
+		public void dialogZickerSelectForFriensSendClick(DialogFragment dialog,
 				String selectedZicker, int NumberPickerValue) {
 				String destMobileNumber=peers.get(0).getPhoneNum();
 			int contentId=0;
 			DataStore.getInstance().sendZekrToUsers(destMobileNumber,contentId, NumberPickerValue, eventsCallback);
-			
+			dialog.dismiss();
+			//TODO toast user
+			Toast.makeText(getBaseContext(), "ZickerSended\njzakAllahAlkher", Toast.LENGTH_SHORT).show();
 		}
 
 		@Override
-		public void dialogZickerSelectForFriendNegativeClick(DialogFragment dialog) {
-			// TODO Auto-generated method stub
-			Log.d("dialogZickerSelectForFriendNegativeClick", "Clicked");
+		public void dialogZickerSelectForFriendCansel(DialogFragment dialog) {
+				dialog.dismiss();			
+				//TODO toast user
+				Toast.makeText(getBaseContext(), "Canseled!!", Toast.LENGTH_SHORT).show();
 		}
 
-		@Override
-		public void dialogZickerSelectForFriensSendClick() {
-			// TODO  
-			Log.d("dialogZickerSelectForFriensSendClick", "Clicked");
-		}
+	
+		
 	};
 	
 		

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+
+    
+    <ListView
+        android:id="@+id/lvZickersList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+		android:layout_marginBottom="50dp"
+        android:divider="@null"
+        android:dividerHeight="4dp"
+        android:background="?android:attr/activatedBackgroundIndicator"
+        tools:listitem="@layout/row_dilaog_zicker_list" >
+   	</ListView>
+    
+    
+   
+	<Button
+        android:id="@+id/btnincnp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Accept" />
+	
+	
+	<TextView
+	    android:id="@+id/tvcount_of_zicker"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="Large Text"
+	    android:textAppearance="?android:attr/textAppearanceLarge" />
+	
+	
+	<Button
+        android:id="@+id/btndecnp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cansel" />
+    	
+   
+    <Button
+        android:id="@+id/btnSelfZickerAccept"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Accept" />
+	
+	
+	<Button
+        android:id="@+id/btnSelfZickerCansel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cansel" />
+
+
+
+</LinearLayout>

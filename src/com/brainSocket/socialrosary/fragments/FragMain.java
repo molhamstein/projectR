@@ -9,9 +9,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -33,7 +33,6 @@ import com.brainSocket.socialrosary.data.ServerResult;
 import com.brainSocket.socialrosary.helpers.AnimationHelper;
 import com.brainSocket.socialrosary.model.AppContact.SOCIAL_MEDIA_ACCOUNT_TYPE;
 import com.brainSocket.socialrosary.model.AppConversation;
-import com.google.android.gms.internal.ay;
 
 public class FragMain extends Fragment implements OnClickListener{
 
